@@ -9,6 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mantine/core": "^4.2.4",
+    "@mantine/dates": "^4.2.4",
+    "@mantine/hooks": "^4.2.4",
+    "@mantine/next": "^4.2.4",
+    "dayjs": "^1.11.2",
     "next": "12.1.5",
     "react": "18.1.0",
     "react-dom": "18.1.0"
