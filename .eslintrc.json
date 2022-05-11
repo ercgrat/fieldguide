@@ -37,6 +37,18 @@
         "semi": [
             "error",
             "always"
+        ],
+        "no-trailing-spaces": [
+          "error"
+        ],
+        "no-irregular-whitespace": [
+          "error"
+        ],
+        "no-whitespace-before-property": [
+          "error"
+        ],
+        "no-multi-spaces": [
+          "error"
         ]
     }
 }
