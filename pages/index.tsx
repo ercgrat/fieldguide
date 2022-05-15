@@ -2,8 +2,10 @@ import React, { useCallback, useState } from 'react';
 import { NextPage } from 'next';
 import { DatePicker } from '@mantine/dates';
 import { Button, Card, Container, Group, Stack, Text } from '@mantine/core';
+import { defineMessage, FormattedMessage, useIntl } from 'react-intl';
 
 const Home: NextPage = () => {
+  const intl = useIntl();
   const [date, setDate] = useState<Date>(new Date());
 
   const handleDateChange = useCallback((newDate: Date | null) => {
@@ -21,18 +23,29 @@ const Home: NextPage = () => {
       <Card shadow="sm">
         <Stack>
           <Group>
-            <Text>Due Date</Text>
+            <Text>
+              <FormattedMessage
+                defaultMessage="Due date"
+                description="No, I'd rather not"
+              />
+            </Text>
             <DatePicker
               clearable={false}
               onChange={handleDateChange}
-              placeholder="Pick dates range"
+              placeholder={intl.formatMessage(defineMessage({
+                defaultMessage: 'Pick date range',
+                description: 'Placeholder message when selecting a date range'
+              }))}
               value={date}
             />
           </Group>
           <Button
             onClick={handleClick}
           >
-            Submit
+            <FormattedMessage
+              defaultMessage="Save"
+              description="Button used to save a selected date range"
+            />
           </Button>
         </Stack>
       </Card>

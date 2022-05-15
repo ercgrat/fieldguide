@@ -19,7 +19,9 @@
     },
     "plugins": [
         "react",
-        "@typescript-eslint"
+        "@typescript-eslint",
+        "formatjs",
+        "i18next"
     ],
     "rules": {
         "indent": [
@@ -53,6 +55,29 @@
         "no-shadow": [
           "error"
         ],
+        "formatjs/enforce-default-message": [
+          "error"
+        ],
+        "formatjs/enforce-description": [
+          "error"
+        ],
+        "formatjs/no-id": [
+          "error"
+        ],
+        "i18next/no-literal-string": [
+          "warn",
+          {
+            "ignore": [
+              "^[^A-Z]" /* Handles most false positives from legitimate, non-user-facing JSX attribute values */
+            ],
+            "ignoreCallee": [
+              "intl.formatMessage"
+            ],
+            "ignoreComponent": [
+              "FormattedMessage"
+            ]
+          }
+        ],
         "react/no-adjacent-inline-elements": [
           "error"
         ],
@@ -72,10 +97,10 @@
           "error"
         ],
         "react/jsx-tag-spacing": [
-          "error"
-        ],
-        "react/jsx-space-before-closing": [
-          "error"
+          "error",
+          {
+            "beforeClosing": "never"
+          }
         ],
         "react/jsx-sort-props": [
           "error"
@@ -89,5 +114,10 @@
         "react/jsx-handler-names": [
           "error"
         ]
+    },
+    "settings": {
+      "react": {
+        "version": "detect"
+      }
     }
 }
