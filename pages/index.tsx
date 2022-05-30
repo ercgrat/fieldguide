@@ -22,8 +22,8 @@ const useStyles = createStyles(theme => ({
     color: theme.colors.purple[5],
     display: 'inline'
   },
-  orange: {
-    color: theme.colors.orange[5],
+  cinnabar: {
+    color: theme.colors.cinnabar[5],
     fontStyle: 'italic',
     display: 'inline'
   }
@@ -68,7 +68,7 @@ const Home: NextPage = () => {
         <Title className={classes.purple} order={1}>
           Relay
         </Title>
-        <Title className={classes.orange} order={1}>
+        <Title className={classes.cinnabar} order={1}>
           !
         </Title>
       </Center>

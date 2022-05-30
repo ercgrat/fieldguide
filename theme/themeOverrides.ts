@@ -2,7 +2,7 @@ import { MantineThemeOverride } from '@mantine/core';
 
 const themeOverrides: MantineThemeOverride = {
   colors: {
-    orange: [
+    cinnabar: [
       '#EEE3E2',
       '#E1C8C4',
       '#DAADA6',
@@ -14,7 +14,7 @@ const themeOverrides: MantineThemeOverride = {
       '#7E483F',
       '#5D413C'
     ],
-    honeydew:[
+    honeydew: [
       '#DFF8EB',
       '#DFF8EB',
       '#DFF8EB',
@@ -38,7 +38,7 @@ const themeOverrides: MantineThemeOverride = {
       '#3D304A',
       '#312B38'
     ],
-    blue: [
+    middleBlue: [
       '#F8FBFB',
       '#D8ECEE',
       '#B6E1E6',
@@ -50,7 +50,7 @@ const themeOverrides: MantineThemeOverride = {
       '#588085',
       '#547074'
     ],
-    gray: [
+    davysGrey: [
       '#85837F',
       '#7A7773',
       '#706D68',
