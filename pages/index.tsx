@@ -1,21 +1,21 @@
 import { useCallback, useState } from 'react';
 import { NextPage } from 'next';
-import { DatePicker } from '@mantine/dates';
 import {
   Button,
   Card,
   Center,
   Container,
   createStyles,
-  Group,
   Stack,
   Text,
-  Title
+  TextInput
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl';
 
 import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = 'https://gybxqjtroqkyzeudyjhh.supabase.co';
+const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
 
 const useStyles = createStyles(theme => ({
   purple: {
@@ -31,72 +31,96 @@ const useStyles = createStyles(theme => ({
 
 const Home: NextPage = () => {
   const intl = useIntl();
-  const [date, setDate] = useState<Date>(new Date());
 
   const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_KEY ?? '';
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
   const { classes } = useStyles();
 
-  const handleDateChange = useCallback((newDate: Date | null) => {
-    if (newDate) {
-      setDate(newDate);
-    }
-  }, []);
+  const form = useForm({
+    initialValues: {
+      email: '',
+      password: ''
+    },
 
-  const handleClick = useCallback(async () => {
-    try {
-      const { user, error } = await supabase.auth.signUp({
-        email: 'eric.gratta@gmail.com',
-        password: 'password'
-      });
-
-      if (error) {
-        alert(error);
-      } else {
-        alert(`Success: ${user?.email} (${user?.id})`);
-      }
-    } catch (e: any) {
-      if (e.message) {
-        alert(e.message);
-      }
+    validate: {
+      email: value =>
+        EMAIL_REGEX.test(value)
+          ? null
+          : intl.formatMessage(
+              defineMessage({
+                defaultMessage: 'Please enter a valid email',
+                description:
+                  'Validation message when user enters invalid email in the log in screen'
+              })
+            ),
+      password: (value: string) =>
+        value.length >= 8
+          ? null
+          : intl.formatMessage(
+              defineMessage({
+                defaultMessage: 'Passwords must be greater than 8 characters',
+                description:
+                  'Validation message when user enters invalid password in the log in screen'
+              })
+            )
     }
-  }, [supabase.auth]);
+  });
 
   return (
     <Container>
       <Center>
-        <Title className={classes.purple} order={1}>
+        <Text className={classes.purple} size="xl" weight="bold">
           Relay
-        </Title>
-        <Title className={classes.cinnabar} order={1}>
+        </Text>
+        <Text className={classes.cinnabar} size="xl" weight="bold">
           !
-        </Title>
+        </Text>
       </Center>
-      <Card shadow="sm">
-        <Stack>
-          <Group>
-            <Text>
-              <FormattedMessage defaultMessage="Due date" description="No, I'd rather not" />
-            </Text>
-            <DatePicker
-              clearable={false}
-              onChange={handleDateChange}
-              placeholder={intl.formatMessage(
+      <Card shadow="md">
+        <form onSubmit={form.onSubmit(values => console.log(values))}>
+          <Stack>
+            <TextInput
+              label={intl.formatMessage(
                 defineMessage({
-                  defaultMessage: 'Pick date range',
-                  description: 'Placeholder message when selecting a date range'
+                  defaultMessage: 'Email',
+                  description: 'Label for the email input on the log in screen'
                 })
               )}
-              value={date}
+              placeholder={intl.formatMessage(
+                defineMessage({
+                  defaultMessage: 'Enter email address',
+                  description: 'Placeholder for the email input on the log in screen'
+                })
+              )}
+              required
+              {...form.getInputProps('email')}
+              type="email"
             />
-          </Group>
-          <Button onClick={handleClick}>
-            <FormattedMessage
-              defaultMessage="Save"
-              description="Button used to save a selected date range"
+            <TextInput
+              label={intl.formatMessage(
+                defineMessage({
+                  defaultMessage: 'Password',
+                  description: 'Label for the password input on the log in screen'
+                })
+              )}
+              placeholder={intl.formatMessage(
+                defineMessage({
+                  defaultMessage: 'Enter password',
+                  description: 'Placeholder for the password input on the log in screen'
+                })
+              )}
+              required
+              {...form.getInputProps('password')}
+              type="password"
             />
-          </Button>
-        </Stack>
+            <Button type="submit">
+              <FormattedMessage
+                defaultMessage="Log in"
+                description="Button used to log into the main application"
+              />
+            </Button>
+          </Stack>
+        </form>
       </Card>
     </Container>
   );

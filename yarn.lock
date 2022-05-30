@@ -460,6 +460,11 @@
   resolved "https://registry.yarnpkg.com/@mantine/dates/-/dates-4.2.4.tgz#4018a56a0f58feb56cd7036f5489c0c76ee76921"
   integrity sha512-ullVkmiOhLBTk30zJgRraMggR8ZLPc4IEwM83dJbhx4mTiJ10CFvl8oz23j2yy00tInCw6vYglqK514ytlsItg==
 
+"@mantine/form@^4.2.7":
+  version "4.2.7"
+  resolved "https://registry.yarnpkg.com/@mantine/form/-/form-4.2.7.tgz#30fe79f3a23e108e4fed9c90004c05c19e84db9f"
+  integrity sha512-nVkS1iCj5n66+LlwVtNLUW+wl69WoMP784hDX7GSL7js7yXCPZbwFTbG5yavF4t8VKoqp+pEe3qL/i7F9z/K7w==
+
 "@mantine/hooks@^4.2.4":
   version "4.2.4"
   resolved "https://registry.yarnpkg.com/@mantine/hooks/-/hooks-4.2.4.tgz#81b049355404d1001a1267e80e1e1aaae4682083"

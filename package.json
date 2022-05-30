@@ -20,6 +20,7 @@
     "react-intl": "^5.25.1"
   },
   "devDependencies": {
+    "@mantine/form": "^4.2.7",
     "@supabase/supabase-js": "^1.35.3",
     "@types/node": "17.0.30",
     "@types/react": "18.0.8",

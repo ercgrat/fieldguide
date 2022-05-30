@@ -22,7 +22,6 @@
   },
   "plugins": ["react", "@typescript-eslint", "formatjs", "i18next"],
   "rules": {
-    "indent": ["error", 2],
     "quotes": ["warn", "single"],
     "semi": ["error", "always"],
     "no-trailing-spaces": ["error"],
