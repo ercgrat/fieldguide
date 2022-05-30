@@ -1,4 +1,3 @@
-import { useCallback, useState } from 'react';
 import { NextPage } from 'next';
 import {
   Button,
@@ -14,6 +13,7 @@ import { useForm } from '@mantine/form';
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl';
 
 import { createClient } from '@supabase/supabase-js';
+import { useCallback } from 'react';
 const SUPABASE_URL = 'https://gybxqjtroqkyzeudyjhh.supabase.co';
 const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
 
@@ -29,6 +29,11 @@ const useStyles = createStyles(theme => ({
   }
 }));
 
+type LoginForm = {
+  email: string;
+  password: string;
+};
+
 const Home: NextPage = () => {
   const intl = useIntl();
 
@@ -36,7 +41,7 @@ const Home: NextPage = () => {
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
   const { classes } = useStyles();
 
-  const form = useForm({
+  const form = useForm<LoginForm>({
     initialValues: {
       email: '',
       password: ''
@@ -66,6 +71,19 @@ const Home: NextPage = () => {
     }
   });
 
+  const handleSubmit = useCallback(
+    (values: LoginForm) => {
+      supabase.auth.signIn(values).then(result => {
+        if (result.error) {
+          console.error(result.error);
+        } else {
+          alert(`success: ${result.user?.email}`);
+        }
+      });
+    },
+    [supabase.auth]
+  );
+
   return (
     <Container>
       <Center>
@@ -77,7 +95,7 @@ const Home: NextPage = () => {
         </Text>
       </Center>
       <Card shadow="md">
-        <form onSubmit={form.onSubmit(values => console.log(values))}>
+        <form onSubmit={form.onSubmit(handleSubmit)}>
           <Stack>
             <TextInput
               label={intl.formatMessage(
@@ -94,6 +112,8 @@ const Home: NextPage = () => {
               )}
               required
               {...form.getInputProps('email')}
+              autoComplete="email"
+              id="email"
               type="email"
             />
             <TextInput
@@ -111,6 +131,8 @@ const Home: NextPage = () => {
               )}
               required
               {...form.getInputProps('password')}
+              autoComplete="current-password"
+              id="password"
               type="password"
             />
             <Button type="submit">
