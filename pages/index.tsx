@@ -1,15 +1,5 @@
 import { NextPage } from 'next';
-import {
-  Button,
-  Center,
-  Container,
-  createStyles,
-  Divider,
-  Group,
-  Stack,
-  Text,
-  TextInput
-} from '@mantine/core';
+import { Button, Center, Divider, Stack, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl';
 
