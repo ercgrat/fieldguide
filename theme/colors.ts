@@ -37,21 +37,21 @@ const colors: MantineThemeOverride['colors'] = {
     '#3D304A',
     '#312B38'
   ],
-  middleBlue: [
-    '#F8FBFB',
-    '#D8ECEE',
-    '#B6E1E6',
-    '#92DCE5',
-    '#7ECAD3',
-    '#6FB8C0',
-    '#63A6AE',
-    '#5C939A',
-    '#588085',
-    '#547074'
+  blue: [
+    '#EAF8FB',
+    '#BFEAF3',
+    '#94DBEA',
+    '#69CDE2',
+    '#69CDE2',
+    '#69CDE2',
+    '#3FBFDA',
+    '#25A5C0',
+    '#1D8196',
+    '#0C3740'
   ],
   davysGrey: [
-    '#85837F',
-    '#7A7773',
+    '#F3F2F2',
+    '#DBD9D7',
     '#706D68',
     '#66635D',
     '#5E5A54',

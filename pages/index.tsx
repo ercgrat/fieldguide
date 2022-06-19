@@ -1,10 +1,11 @@
 import { NextPage } from 'next';
 import {
   Button,
-  Card,
   Center,
   Container,
   createStyles,
+  Divider,
+  Group,
   Stack,
   Text,
   TextInput
@@ -13,33 +14,28 @@ import { useForm } from '@mantine/form';
 import { defineMessage, FormattedMessage, useIntl } from 'react-intl';
 
 import { createClient } from '@supabase/supabase-js';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
+import React from 'react';
+import { showNotification } from '@mantine/notifications';
+import { handleError } from '../utils/error';
+import AuthCard from '../components/Landing/AuthCard';
+import { useRouter } from 'next/router';
+import Logo from '../components/Landing/Logo';
 const SUPABASE_URL = 'https://gybxqjtroqkyzeudyjhh.supabase.co';
 const EMAIL_REGEX = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
-
-const useStyles = createStyles(theme => ({
-  purple: {
-    color: theme.colors.purple[5],
-    display: 'inline'
-  },
-  cinnabar: {
-    color: theme.colors.cinnabar[5],
-    fontStyle: 'italic',
-    display: 'inline'
-  }
-}));
 
 type LoginForm = {
   email: string;
   password: string;
 };
 
-const Home: NextPage = () => {
+const Root: NextPage = () => {
   const intl = useIntl();
 
   const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_KEY ?? '';
   const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
-  const { classes } = useStyles();
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const router = useRouter();
 
   const form = useForm<LoginForm>({
     initialValues: {
@@ -73,79 +69,97 @@ const Home: NextPage = () => {
 
   const handleSubmit = useCallback(
     (values: LoginForm) => {
-      supabase.auth.signIn(values).then(result => {
-        if (result.error) {
-          console.error(result.error);
-        } else {
-          alert(`success: ${result.user?.email}`);
-        }
-      });
+      setIsLoggingIn(true);
+      supabase.auth
+        .signIn(values)
+        .then(result => {
+          if (result.error) {
+            showNotification({
+              message: result.error.message,
+              color: 'red'
+            });
+          } else {
+            alert(`success: ${result.user?.email}`);
+          }
+        })
+        .catch(handleError)
+        .finally(() => setIsLoggingIn(false));
     },
     [supabase.auth]
   );
 
+  const handleSignupClick = useCallback(() => {
+    router.push('/signup');
+  }, [router]);
+
   return (
-    <Container>
-      <Center>
-        <Text className={classes.purple} size="xl" weight="bold">
-          Relay
-        </Text>
-        <Text className={classes.cinnabar} size="xl" weight="bold">
-          !
-        </Text>
-      </Center>
-      <Card shadow="md">
-        <form onSubmit={form.onSubmit(handleSubmit)}>
-          <Stack>
-            <TextInput
-              label={intl.formatMessage(
-                defineMessage({
-                  defaultMessage: 'Email',
-                  description: 'Label for the email input on the log in screen'
-                })
-              )}
-              placeholder={intl.formatMessage(
-                defineMessage({
-                  defaultMessage: 'Enter email address',
-                  description: 'Placeholder for the email input on the log in screen'
-                })
-              )}
-              required
-              {...form.getInputProps('email')}
-              autoComplete="email"
-              id="email"
-              type="email"
-            />
-            <TextInput
-              label={intl.formatMessage(
-                defineMessage({
-                  defaultMessage: 'Password',
-                  description: 'Label for the password input on the log in screen'
-                })
-              )}
-              placeholder={intl.formatMessage(
-                defineMessage({
-                  defaultMessage: 'Enter password',
-                  description: 'Placeholder for the password input on the log in screen'
-                })
-              )}
-              required
-              {...form.getInputProps('password')}
-              autoComplete="current-password"
-              id="password"
-              type="password"
-            />
-            <Button type="submit">
+    <Center>
+      <Stack>
+        <Center>
+          <Logo isHomeLinkEnabled={false} />
+        </Center>
+        <AuthCard>
+          <form onSubmit={form.onSubmit(handleSubmit)}>
+            <Stack>
+              <TextInput
+                label={intl.formatMessage(
+                  defineMessage({
+                    defaultMessage: 'Email',
+                    description: 'Label for the email input on the log in screen'
+                  })
+                )}
+                placeholder={intl.formatMessage(
+                  defineMessage({
+                    defaultMessage: 'Enter email address',
+                    description: 'Placeholder for the email input on the log in screen'
+                  })
+                )}
+                required
+                {...form.getInputProps('email')}
+                autoComplete="email"
+                id="email"
+                type="email"
+              />
+              <TextInput
+                label={intl.formatMessage(
+                  defineMessage({
+                    defaultMessage: 'Password',
+                    description: 'Label for the password input on the log in screen'
+                  })
+                )}
+                placeholder={intl.formatMessage(
+                  defineMessage({
+                    defaultMessage: 'Enter password',
+                    description: 'Placeholder for the password input on the log in screen'
+                  })
+                )}
+                required
+                {...form.getInputProps('password')}
+                autoComplete="current-password"
+                id="password"
+                type="password"
+              />
+              <Button loading={isLoggingIn} type="submit">
+                <FormattedMessage
+                  defaultMessage="Log in"
+                  description="Button used to log into the main application"
+                />
+              </Button>
+            </Stack>
+          </form>
+          <Divider my={12} />
+          <Center>
+            <Button color="honeydew" fullWidth onClick={handleSignupClick}>
               <FormattedMessage
-                defaultMessage="Log in"
-                description="Button used to log into the main application"
+                defaultMessage="Sign up"
+                description="Button to visit the new account sign up screen"
               />
             </Button>
-          </Stack>
-        </form>
-      </Card>
-    </Container>
+          </Center>
+        </AuthCard>
+      </Stack>
+    </Center>
   );
 };
 
-export default Home;
+export default React.memo(Root);
