@@ -28,7 +28,7 @@
     "no-irregular-whitespace": ["error"],
     "no-whitespace-before-property": ["error"],
     "no-multi-spaces": ["error"],
-    "no-shadow": ["error"],
+    "no-shadow": "off",
     "formatjs/enforce-default-message": ["error"],
     "formatjs/enforce-description": ["error"],
     "formatjs/no-id": ["error"],
@@ -60,7 +60,8 @@
     "react/jsx-sort-default-props": ["error"],
     "react/jsx-no-constructed-context-values": ["error"],
     "react/jsx-handler-names": ["error"],
-    "@typescript-eslint/no-unused-vars": ["error"]
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/no-shadow": ["error"]
   },
   "settings": {
     "react": {

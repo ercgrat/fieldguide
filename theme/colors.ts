@@ -37,7 +37,7 @@ const colors: MantineThemeOverride['colors'] = {
     '#3D304A',
     '#312B38'
   ],
-  blue: [
+  middleBlue: [
     '#EAF8FB',
     '#BFEAF3',
     '#94DBEA',

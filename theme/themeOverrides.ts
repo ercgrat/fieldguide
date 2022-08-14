@@ -4,7 +4,11 @@ import { colors } from '.';
 const themeOverrides: MantineThemeOverride = {
   colors,
   fontSizes: {
-    xl: 60
+    xs: 10,
+    sm: 14,
+    md: 18,
+    lg: 24,
+    xl: 36
   }
 };
 

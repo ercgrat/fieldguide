@@ -5,6 +5,9 @@ import ThemeProvider from '../theme/ThemeProvider';
 import { NotificationsProvider } from '@mantine/notifications';
 import './globalStyles.css';
 import AppWrapper from '../components/Landing/AppWrapper';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
+const queryClient = new QueryClient();
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -12,9 +15,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       <IntlProvider locale="en">
         <ThemeProvider>
           <NotificationsProvider>
-            <AppWrapper>
-              <Component {...pageProps} />
-            </AppWrapper>
+            <QueryClientProvider client={queryClient}>
+              <AppWrapper>
+                <Component {...pageProps} />
+              </AppWrapper>
+            </QueryClientProvider>
           </NotificationsProvider>
         </ThemeProvider>
       </IntlProvider>
