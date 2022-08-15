@@ -3,7 +3,12 @@ import { GOOGLE_CLIENT_ID } from '../../utils/const';
 import { OAuth2Client } from 'google-auth-library';
 import { ReasonPhrases, StatusCodes } from 'http-status-codes';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+type Return = {
+  email: string;
+  name: string;
+};
+
+export default async (req: NextApiRequest, res: NextApiResponse<string | Return>) => {
   const idToken = req.query['token'];
   console.log('login handled!', idToken);
   if (typeof idToken !== 'string') {
@@ -16,8 +21,13 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     .verifyIdToken({
       idToken
     })
-    .then(() => {
-      res.status(StatusCodes.OK).send(ReasonPhrases.OK);
+    .then(ticket => {
+      const { email = '', name = '' } = ticket.getPayload() ?? {};
+      console.log(email, name);
+      res.status(StatusCodes.OK).send({
+        email,
+        name
+      });
     })
     .catch(() => {
       res.status(StatusCodes.UNAUTHORIZED).send(ReasonPhrases.UNAUTHORIZED);

@@ -10,13 +10,16 @@ import { GOOGLE_CLIENT_ID } from '../utils/const';
 import { useMutation } from 'react-query';
 import { QueryKey } from '../utils/enums';
 import { showNotification } from '@mantine/notifications';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
+import { useRouter } from 'next/router';
+import { stringifyParams } from '../utils/fetch';
 
 const Root: NextPage = () => {
   const intl = useIntl();
-  const { mutate: logIn } = useMutation<void, Error, string>(
+  const router = useRouter();
+  const { mutate: logIn } = useMutation<AxiosResponse<APIResponse.Login>, Error, string>(
     QueryKey.Login,
-    (token: string) => axios.get(`/api/login?token=${token}`),
+    (token: string) => axios.get(`/api/login?${stringifyParams({ token })}`),
     {
       onError: () =>
         showNotification({
@@ -31,8 +34,8 @@ const Root: NextPage = () => {
               'Body of toast error presented to the user after successfully logging into Google but failing to log into Field Guide'
           })
         }),
-      onSuccess: () => {
-        alert('logged in');
+      onSuccess: (res: AxiosResponse<APIResponse.Login>) => {
+        router.push(`/signup?email=${res.data.email}&name=${res.data.name}`);
       }
     }
   );
