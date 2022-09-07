@@ -28,7 +28,7 @@ const useStyles = createStyles((theme, { isHomeLinkEnabled }: StyleProps) => ({
 type Props = {
   isHomeLinkEnabled?: boolean;
 };
-const Logo: Relay.FC<Props> = ({ isHomeLinkEnabled = true }) => {
+const Logo: React.FC<Props> = ({ isHomeLinkEnabled = true }) => {
   const { classes } = useStyles({ isHomeLinkEnabled });
   const router = useRouter();
 

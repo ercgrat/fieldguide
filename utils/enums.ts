@@ -1,3 +1,10 @@
 export enum QueryKey {
+  User = 'User',
   Login = 'Login'
+}
+
+export enum Route {
+  Home = 'dummy',
+  Login = '/',
+  Signup = '/signup'
 }

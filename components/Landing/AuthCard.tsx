@@ -8,7 +8,10 @@ const useStyles = createStyles(() => ({
   }
 }));
 
-const AuthCard: Relay.FCWithChildren = ({ children }) => {
+type Props = {
+  children: React.ReactNode;
+};
+const AuthCard: React.FC<Props> = ({ children }) => {
   const { classes } = useStyles();
   return (
     <Card className={classes.loginCard} shadow="md">

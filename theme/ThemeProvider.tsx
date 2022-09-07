@@ -2,7 +2,10 @@ import { MantineProvider } from '@mantine/core';
 import { memo } from 'react';
 import themeOverrides from './themeOverrides';
 
-const ThemeProvider: Relay.FCWithChildren = ({ children }) => (
+type Props = {
+  children: React.ReactNode;
+};
+const ThemeProvider: React.FC<Props> = ({ children }) => (
   <MantineProvider theme={themeOverrides}>{children}</MantineProvider>
 );
 

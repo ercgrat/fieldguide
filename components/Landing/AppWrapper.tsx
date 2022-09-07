@@ -11,7 +11,11 @@ const useStyles = createStyles(theme => ({
     backgroundColor: theme.colors.davysGrey[0]
   }
 }));
-const AppWrapper: Relay.FCWithChildren = ({ children }) => {
+
+type Props = {
+  children: React.ReactNode;
+};
+const AppWrapper: React.FC<Props> = ({ children }) => {
   const { classes } = useStyles();
 
   return <Container className={classes.container}>{children}</Container>;

@@ -1,33 +1,67 @@
-import { Center, Input, Stack } from '@mantine/core';
+import { Center, Stack, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React from 'react';
-import { useIntl } from 'react-intl';
-import AuthCard from '../../components/Landing/AuthCard';
-import Logo from '../../components/Landing/Logo';
+import React, { useMemo, useState } from 'react';
+import AuthCard from 'components/Landing/AuthCard';
+import Logo from 'components/Landing/Logo';
+import { isClient } from 'utils/browser';
+import { Route } from 'utils/enums';
+import { useSupabase } from 'utils/supabase';
+import { useInsertUserMutation, useSelectUserQuery } from 'fetch/users';
+import { FormattedMessage, useIntl } from 'react-intl';
+import { Button } from '@mantine/core';
+import { Group } from '@mantine/core';
+import { useCallback } from 'react';
+import T from 'components/Base/T';
+import { Divider } from '@mantine/core';
 
 const Signup: NextPage = () => {
   const intl = useIntl();
   const router = useRouter();
-  const { email, name } = router.query as APIResponse.Login;
+  const supabase = useSupabase();
+  const authUser = supabase.auth.user();
+  const user = useSelectUserQuery();
+  const [isLoading, setIsLoading] = useState(false);
 
-  if (typeof email !== 'string' || typeof name !== 'string') {
-    throw new Error(
-      intl.formatMessage({
-        defaultMessage: 'Email or name param is invalid',
-        description:
-          'Error thrown when visiting the signup page without valid email or name provided'
-      })
-    );
-  }
-
-  const { getInputProps } = useForm<APIResponse.Login>({
+  const { getInputProps, onSubmit, values } = useForm({
     initialValues: {
-      email,
-      name
+      user_id: authUser?.id ?? '',
+      first_name: '',
+      last_name: ''
     }
   });
+
+  const { mutate } = useInsertUserMutation(values, () => {
+    router.push(Route.Home);
+  });
+  const handleSubmit = useMemo(
+    () =>
+      onSubmit(() => {
+        mutate();
+      }),
+    [mutate, onSubmit]
+  );
+
+  const handleCancelClick = useCallback(() => {
+    setIsLoading(true);
+    supabase.auth
+      .signOut()
+      .then(() => {
+        router.push(Route.Login);
+      })
+      .finally(() => setIsLoading(false));
+  }, [router, supabase.auth]);
+
+  if (isClient && !authUser) {
+    // If not logged in, reroute to login
+    router.push(Route.Login);
+  }
+
+  if (isClient && !!user) {
+    // If non-auth user is already created, reroute to main page
+    router.push(Route.Home);
+  }
 
   return (
     <Center>
@@ -36,8 +70,52 @@ const Signup: NextPage = () => {
           <Logo />
         </Center>
         <AuthCard>
-          <Input {...getInputProps('email')} />
-          <Input {...getInputProps('name')} />
+          <form onSubmit={handleSubmit}>
+            <Stack>
+              <Center>
+                <T.Title>
+                  <FormattedMessage
+                    defaultMessage="Create Account"
+                    description="Title for a form where user can enter their details to sign up"
+                  />
+                </T.Title>
+              </Center>
+              <Divider />
+              <Stack spacing="xs">
+                <TextInput
+                  {...getInputProps('first_name')}
+                  label={intl.formatMessage({
+                    defaultMessage: 'First Name',
+                    description: 'Label for input where user enters their first name'
+                  })}
+                  required
+                />
+
+                <TextInput
+                  {...getInputProps('last_name')}
+                  label={intl.formatMessage({
+                    defaultMessage: 'Last Name',
+                    description: 'Label for input where user enters their last name'
+                  })}
+                  required
+                />
+              </Stack>
+              <Group align="end" position="right" spacing="sm">
+                <Button color="davysGrey" loading={isLoading} onClick={handleCancelClick}>
+                  <FormattedMessage
+                    defaultMessage="Cancel"
+                    description="Button to exit signup flow and go back to login page"
+                  />
+                </Button>
+                <Button color="cinnabar" type="submit">
+                  <FormattedMessage
+                    defaultMessage="Create account"
+                    description="Button to submit user info and create an account"
+                  />
+                </Button>
+              </Group>
+            </Stack>
+          </form>
         </AuthCard>
       </Stack>
     </Center>

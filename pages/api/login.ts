@@ -10,7 +10,6 @@ type Return = {
 
 export default async (req: NextApiRequest, res: NextApiResponse<string | Return>) => {
   const idToken = req.query['token'];
-  console.log('login handled!', idToken);
   if (typeof idToken !== 'string') {
     res.status(StatusCodes.BAD_REQUEST).send(ReasonPhrases.BAD_REQUEST);
     return;
@@ -23,7 +22,6 @@ export default async (req: NextApiRequest, res: NextApiResponse<string | Return>
     })
     .then(ticket => {
       const { email = '', name = '' } = ticket.getPayload() ?? {};
-      console.log(email, name);
       res.status(StatusCodes.OK).send({
         email,
         name

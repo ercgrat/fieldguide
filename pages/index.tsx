@@ -1,45 +1,26 @@
 import { NextPage } from 'next';
-import { Center, Divider, Stack, Text } from '@mantine/core';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { Center, Divider, Stack } from '@mantine/core';
 
-import React, { useCallback } from 'react';
-import AuthCard from '../components/Landing/AuthCard';
-import Logo from '../components/Landing/Logo';
-import { FormattedMessage, useIntl } from 'react-intl';
-import { GOOGLE_CLIENT_ID } from '../utils/const';
-import { useMutation } from 'react-query';
-import { QueryKey } from '../utils/enums';
-import { showNotification } from '@mantine/notifications';
-import axios, { AxiosResponse } from 'axios';
+import React from 'react';
+import AuthCard from 'components/Landing/AuthCard';
+import Logo from 'components/Landing/Logo';
+import { FormattedMessage } from 'react-intl';
+import LoginButton from 'components/Landing/LoginButton';
+import { useSupabase } from 'utils/supabase';
 import { useRouter } from 'next/router';
-import { stringifyParams } from '../utils/fetch';
+import { Route } from 'utils/enums';
+import T from 'components/Base/T';
 
 const Root: NextPage = () => {
-  const intl = useIntl();
+  const supabase = useSupabase();
   const router = useRouter();
-  const { mutate: logIn } = useMutation<AxiosResponse<APIResponse.Login>, Error, string>(
-    QueryKey.Login,
-    (token: string) => axios.get(`/api/login?${stringifyParams({ token })}`),
-    {
-      onError: () =>
-        showNotification({
-          title: intl.formatMessage({
-            defaultMessage: 'Failed to log in',
-            description:
-              'Title of toast error presented to the user after successfully logging into Google but failing to log into Field Guide'
-          }),
-          message: intl.formatMessage({
-            defaultMessage: 'Your Google credentials were not recognized',
-            description:
-              'Body of toast error presented to the user after successfully logging into Google but failing to log into Field Guide'
-          })
-        }),
-      onSuccess: (res: AxiosResponse<APIResponse.Login>) => {
-        router.push(`/signup?email=${res.data.email}&name=${res.data.name}`);
-      }
+
+  supabase.auth.onAuthStateChange(() => {
+    const user = supabase.auth.user();
+    if (user) {
+      router.push(Route.Signup);
     }
-  );
-  const handleGoogleLoginSuccess = useCallback((token: string) => logIn(token), [logIn]);
+  });
 
   return (
     <Center>
@@ -50,22 +31,16 @@ const Root: NextPage = () => {
         <AuthCard>
           <Stack>
             <Center>
-              <Text color="purple" size="xl">
+              <T.Title>
                 <FormattedMessage
-                  defaultMessage="Sign in"
-                  description="Label for a button to log in with Google"
+                  defaultMessage="Log In"
+                  description="Label for a form to log into the app"
                 />
-              </Text>
+              </T.Title>
             </Center>
             <Divider />
             <Center>
-              <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-                <GoogleLogin
-                  onError={() => alert('error')}
-                  onSuccess={({ credential }) => handleGoogleLoginSuccess(credential ?? '')}
-                  useOneTap={false}
-                />
-              </GoogleOAuthProvider>
+              <LoginButton />
             </Center>
           </Stack>
         </AuthCard>
