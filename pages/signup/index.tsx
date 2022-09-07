@@ -7,7 +7,7 @@ import AuthCard from 'components/Landing/AuthCard';
 import Logo from 'components/Landing/Logo';
 import { isClient } from 'utils/browser';
 import { Route } from 'utils/enums';
-import { useSupabase } from 'utils/supabase';
+import { useSupabase, useSupabaseUser } from 'utils/supabase';
 import { useInsertUserMutation, useSelectUserQuery } from 'fetch/users';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Button } from '@mantine/core';
@@ -20,8 +20,8 @@ const Signup: NextPage = () => {
   const intl = useIntl();
   const router = useRouter();
   const supabase = useSupabase();
-  const authUser = supabase.auth.user();
-  const user = useSelectUserQuery();
+  const authUser = useSupabaseUser();
+  const { data: user } = useSelectUserQuery(authUser?.id);
   const [isLoading, setIsLoading] = useState(false);
 
   const { getInputProps, onSubmit, values } = useForm({
@@ -45,20 +45,10 @@ const Signup: NextPage = () => {
 
   const handleCancelClick = useCallback(() => {
     setIsLoading(true);
-    supabase.auth
-      .signOut()
-      .then(() => {
-        router.push(Route.Login);
-      })
-      .finally(() => setIsLoading(false));
-  }, [router, supabase.auth]);
+    supabase.auth.signOut().finally(() => setIsLoading(false));
+  }, [supabase.auth]);
 
-  if (isClient && !authUser) {
-    // If not logged in, reroute to login
-    router.push(Route.Login);
-  }
-
-  if (isClient && !!user) {
+  if (isClient && !!user?.user_id) {
     // If non-auth user is already created, reroute to main page
     router.push(Route.Home);
   }

@@ -4,7 +4,7 @@ export enum QueryKey {
 }
 
 export enum Route {
-  Home = 'dummy',
+  Home = '/home',
   Login = '/',
   Signup = '/signup'
 }

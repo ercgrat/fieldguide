@@ -2,18 +2,18 @@ import { useMutation, useQuery } from 'react-query';
 import { definitions } from 'types/supabase';
 import { QueryKey } from 'utils/enums';
 import { handleError } from 'utils/error';
-import { useDatabase, useSupabase } from 'utils/supabase';
+import { useDatabase } from 'utils/supabase';
 
-export const useSelectUserQuery = () => {
-  const supabase = useSupabase();
-  const user = supabase.auth.user();
+export const useSelectUserQuery = (userID: string | undefined, options?: { enabled?: boolean }) => {
+  const { enabled = true } = options ?? {};
+
   const { users } = useDatabase();
 
-  const { data: res } = useQuery(
-    [QueryKey.User, user?.id],
-    async () => await users.select().eq('user_id', user?.id).single(),
+  const result = useQuery(
+    [QueryKey.User, userID],
+    async () => await users.select().eq('user_id', userID),
     {
-      enabled: !!user?.id,
+      enabled: enabled && !!userID,
       cacheTime: Number.POSITIVE_INFINITY,
       staleTime: Number.POSITIVE_INFINITY,
       onError: (e: Error) => handleError(e),
@@ -26,7 +26,10 @@ export const useSelectUserQuery = () => {
     }
   );
 
-  return res?.body;
+  return {
+    ...result,
+    data: result.data?.body?.[0]
+  };
 };
 
 export const useInsertUserMutation = (user: definitions['users'], onSuccess: () => void) => {
