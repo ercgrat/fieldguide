@@ -3,11 +3,10 @@ import { Burger, Header as MantineHeader, Group, MediaQuery } from '@mantine/cor
 import { useMantineTheme } from '@mantine/core';
 import T from 'components/Base/T';
 import { FormattedMessage } from 'react-intl';
-import { useSelectUserQuery } from 'fetch/users';
 import { Button } from '@mantine/core';
-import { useSupabase, useSupabaseUser } from 'utils/supabase';
 import { useCallback } from 'react';
 import { useState } from 'react';
+import { useSession, signOut } from 'next-auth/react';
 
 type Props = {
   isNavOpen: boolean;
@@ -15,16 +14,14 @@ type Props = {
 };
 const Header: React.FC<Props> = ({ isNavOpen, handleBurgerClick }) => {
   const theme = useMantineTheme();
-  const authUser = useSupabaseUser();
-  const { data: user } = useSelectUserQuery(authUser?.id);
-  const isLoggedIn = !!user?.user_id;
-  const supabase = useSupabase();
+  const { data, status } = useSession();
+  const isLoggedIn = status === 'authenticated';
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogOut = useCallback(() => {
     setIsLoggingOut(true);
-    supabase.auth.signOut().finally(() => setIsLoggingOut(false));
-  }, [supabase.auth]);
+    signOut().finally(() => setIsLoggingOut(false));
+  }, []);
 
   return (
     <MantineHeader height={50} px={12}>
@@ -44,12 +41,15 @@ const Header: React.FC<Props> = ({ isNavOpen, handleBurgerClick }) => {
           </T.Title>
         </Group>
         {isLoggedIn && (
-          <Button color="cinnabar" loading={isLoggingOut} onClick={handleLogOut}>
-            <FormattedMessage
-              defaultMessage="Log out"
-              description="Text of a button that logs the user out"
-            />
-          </Button>
+          <Group>
+            <T.Body>{data?.user?.name}</T.Body>
+            <Button color="cinnabar" loading={isLoggingOut} onClick={handleLogOut}>
+              <FormattedMessage
+                defaultMessage="Log out"
+                description="Text of a button that logs the user out"
+              />
+            </Button>
+          </Group>
         )}
       </Group>
     </MantineHeader>

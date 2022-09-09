@@ -6,29 +6,21 @@ import AuthCard from 'components/Landing/AuthCard';
 import Logo from 'components/Landing/Logo';
 import { FormattedMessage } from 'react-intl';
 import LoginButton from 'components/Landing/LoginButton';
-import { useSupabaseUser } from 'utils/supabase';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { Route } from 'utils/enums';
 import T from 'components/Base/T';
-import { useSelectUserQuery } from 'fetch/users';
 import { useEffect } from 'react';
 
 const Root: NextPage = () => {
   const router = useRouter();
-  const authUser = useSupabaseUser();
-  const { refetch, isLoading } = useSelectUserQuery(authUser?.id, { enabled: false });
+  const { status } = useSession();
 
   useEffect(() => {
-    if (authUser) {
-      refetch().then(res => {
-        if (res.data?.body?.[0]) {
-          router.push(Route.Home);
-        } else {
-          router.push(Route.Signup);
-        }
-      });
+    if (status === 'authenticated') {
+      router.push(Route.Home);
     }
-  }, [authUser, refetch, router]);
+  }, [router, status]);
 
   return (
     <Center>
@@ -37,7 +29,7 @@ const Root: NextPage = () => {
           <Logo isHomeLinkEnabled={false} />
         </Center>
         <AuthCard>
-          {isLoading ? (
+          {status === 'loading' ? (
             <Stack>
               <Skeleton height={8} radius="xl" />
               <Skeleton height={8} radius="xl" />

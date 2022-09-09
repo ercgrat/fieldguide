@@ -2,17 +2,14 @@ import { Button, Group } from '@mantine/core';
 import React, { useCallback } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { showNotification } from '@mantine/notifications';
-import { useSupabase } from '../../utils/supabase';
+import { signIn} from 'next-auth/react';
 
 const LoginButton: React.FC = () => {
   const intl = useIntl();
-  const supabase = useSupabase();
 
   const logIn = useCallback(async () => {
-    const { error } = await supabase.auth.signIn({
-      provider: 'google'
-    });
-    if (error) {
+    const res = await signIn('google');
+    if (res?.error) {
       showNotification({
         message: intl.formatMessage(
           {
@@ -20,12 +17,12 @@ const LoginButton: React.FC = () => {
             description: 'Error that appears when Google login fails.'
           },
           {
-            message: error.message
+            message: res.error
           }
         )
       });
     }
-  }, [intl, supabase.auth]);
+  }, [intl]);
 
   return (
     <Button color="cinnabar" onClick={logIn} radius="xl">

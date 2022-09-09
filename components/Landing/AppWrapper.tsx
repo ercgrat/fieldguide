@@ -7,8 +7,8 @@ import { useEffect } from 'react';
 import { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Route } from 'utils/enums';
-import { useSupabase } from 'utils/supabase';
 import Header from './Header';
+import { useSession } from 'next-auth/react';
 
 const useStyles = createStyles(() => ({
   container: {
@@ -25,7 +25,7 @@ type Props = {
 const AppWrapper: React.FC<Props> = ({ children }) => {
   const { classes } = useStyles();
   const [isNavOpen, setIsNavOpen] = useState(true);
-  const supabase = useSupabase();
+  const { status } = useSession();
 
   const handleBurgerClick = useCallback(() => {
     setIsNavOpen(o => !o);
@@ -33,14 +33,10 @@ const AppWrapper: React.FC<Props> = ({ children }) => {
 
   const router = useRouter();
   useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange(() => {
-      if (!supabase.auth.user()) {
-        router.push(Route.Login);
-      }
-    });
-
-    return () => listener?.unsubscribe();
-  }, [router, supabase.auth]);
+    if(status === 'unauthenticated' && router.pathname !== Route.Login) {
+      router.push(Route.Login);
+    }
+  }, [router, status]);
 
   return (
     <AppShell
