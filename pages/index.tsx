@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import { Center, Divider, Skeleton, Stack } from '@mantine/core';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import AuthCard from 'components/Landing/AuthCard';
 import Logo from 'components/Landing/Logo';
 import { FormattedMessage } from 'react-intl';
@@ -10,7 +10,6 @@ import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { Route } from 'utils/enums';
 import T from 'components/Base/T';
-import { useEffect } from 'react';
 
 const Root: NextPage = () => {
   const router = useRouter();

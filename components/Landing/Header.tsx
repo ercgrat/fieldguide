@@ -1,11 +1,14 @@
-import React from 'react';
-import { Burger, Header as MantineHeader, Group, MediaQuery } from '@mantine/core';
-import { useMantineTheme } from '@mantine/core';
+import React, { useCallback, useState } from 'react';
+import {
+  Button,
+  Burger,
+  Header as MantineHeader,
+  Group,
+  MediaQuery,
+  useMantineTheme
+} from '@mantine/core';
 import T from 'components/Base/T';
 import { FormattedMessage } from 'react-intl';
-import { Button } from '@mantine/core';
-import { useCallback } from 'react';
-import { useState } from 'react';
 import { useSession, signOut } from 'next-auth/react';
 
 type Props = {

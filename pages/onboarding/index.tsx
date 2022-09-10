@@ -11,7 +11,7 @@ enum Step {
 
 const Home: NextPage = () => {
   const intl = useIntl();
-  const [active, setActive] = useState(Step.One);
+  const [active] = useState(Step.One);
   return (
     <Box m={20}>
       <Stepper active={active} mb={20}>
