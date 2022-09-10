@@ -1,14 +1,9 @@
-import { AppShell, Navbar } from '@mantine/core';
-import { Container, createStyles } from '@mantine/core';
+import { Container, createStyles, AppShell, Navbar } from '@mantine/core';
 import T from 'components/Base/T';
-import { useRouter } from 'next/router';
-import React, { useState } from 'react';
-import { useEffect } from 'react';
-import { useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Route } from 'utils/enums';
 import Header from './Header';
-import { useSession } from 'next-auth/react';
+import { useRedirects } from 'utils/router';
 
 const useStyles = createStyles(() => ({
   container: {
@@ -24,19 +19,13 @@ type Props = {
 };
 const AppWrapper: React.FC<Props> = ({ children }) => {
   const { classes } = useStyles();
-  const [isNavOpen, setIsNavOpen] = useState(true);
-  const { status } = useSession();
+  const [isNavOpen, setIsNavOpen] = useState(false);
 
   const handleBurgerClick = useCallback(() => {
     setIsNavOpen(o => !o);
   }, []);
 
-  const router = useRouter();
-  useEffect(() => {
-    if(status === 'unauthenticated' && router.pathname !== Route.Login) {
-      router.push(Route.Login);
-    }
-  }, [router, status]);
+  useRedirects();
 
   return (
     <AppShell

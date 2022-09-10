@@ -13,6 +13,12 @@ const Label = React.forwardRef<HTMLDivElement, TextProps>(({ children, ...props 
   </Text>
 ));
 
+const Subtitle = React.forwardRef<HTMLDivElement, TextProps>(({ children, ...props }, ref) => (
+  <Text ref={ref} size="lg" {...props}>
+    {children}
+  </Text>
+));
+
 const Title = React.forwardRef<HTMLDivElement, TextProps>(({ children, ...props }, ref) => (
   <Text ref={ref} size="lg" weight="bold" {...props}>
     {children}
@@ -22,5 +28,6 @@ const Title = React.forwardRef<HTMLDivElement, TextProps>(({ children, ...props 
 export default {
   Body,
   Label,
+  Subtitle,
   Title
 };

@@ -29,6 +29,35 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
+model Crop {
+  id             Int          @id @default(autoincrement())
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+  name           String
+  daysToMaturity Int?
+  harvestWindow  Int?
+}
+
+model Membership {
+  id             Int          @id @default(autoincrement())
+  user           User         @relation(fields: [userId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  userId         String
+  organizationId Int
+  role           Role         @default(Member)
+
+  @@unique([userId, organizationId])
+}
+
+model Organization {
+  id         Int          @id @default(autoincrement())
+  created_at DateTime     @default(now())
+  name       String       @unique
+  unitSystem UnitSystem
+  Membership Membership[]
+  Crop       Crop[]
+}
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
@@ -56,25 +85,12 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Organization {
-  id         Int          @id @default(autoincrement())
-  created_at DateTime     @default(now())
-  name       String       @unique
-  Membership Membership[]
-}
-
-model Membership {
-  id             Int          @id @default(autoincrement())
-  user           User         @relation(fields: [userId], references: [id])
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  userId         String
-  organizationId Int
-  role           Role         @default(Member)
-
-  @@unique([userId, organizationId])
-}
-
 enum Role {
   Owner
   Member
+}
+
+enum UnitSystem {
+  Metric
+  Imperial
 }

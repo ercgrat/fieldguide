@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "dbsync": "prisma migrate dev",
-    "typegen": "npx openapi-typescript https://pshtrqwuahhjszahjcyk.supabase.co/rest/v1/?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBzaHRycXd1YWhoanN6YWhqY3lrIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NjA0NzgyMDcsImV4cCI6MTk3NjA1NDIwN30.1O5mG_CUnKKlQN77XRehcy6pnv-b5T0qE5g8udIZVYA --output types/supabase.ts"
+    "client-gen": "prisma generate"
   },
   "dependencies": {
     "@mantine/core": "^5.1.5",

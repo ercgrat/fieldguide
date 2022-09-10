@@ -9,6 +9,5 @@ module.exports = {
   trailingComma: 'none',
   bracketSpacing: true,
   jsxBracketSameLine: false,
-  arrowParens: 'avoid',
-  plugins: ['prettier-plugin-prisma']
+  arrowParens: 'avoid'
 };

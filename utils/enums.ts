@@ -5,5 +5,6 @@ export enum QueryKey {
 
 export enum Route {
   Home = '/home',
-  Login = '/'
+  Login = '/',
+  Onboarding = '/onboarding'
 }
