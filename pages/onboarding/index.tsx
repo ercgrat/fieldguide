@@ -1,17 +1,50 @@
-import { Box, Button, Group, Image, Paper, Stepper } from '@mantine/core';
+import {
+  Box,
+  Button,
+  Center,
+  createStyles,
+  Group,
+  Image,
+  Paper,
+  Radio,
+  Stack,
+  Stepper,
+  TextInput
+} from '@mantine/core';
+import { UnitSystem } from '@prisma/client';
 import T from 'components/Base/T';
 import { NextPage } from 'next';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 enum Step {
   One = 1,
-  Two = 2
+  Two = 2,
+  Three = 3
 }
+
+const useStyles = createStyles(() => ({
+  stepTwoForm: {
+    width: '500px',
+    maxWidth: '100vh'
+  }
+}));
 
 const Home: NextPage = () => {
   const intl = useIntl();
-  const [active] = useState(Step.One);
+  const { classes } = useStyles();
+  const [active, setActive] = useState(Step.One);
+
+  const goToStepOne = useCallback(() => {
+    setActive(Step.One);
+  }, []);
+  const goToStepTwo = useCallback(() => {
+    setActive(Step.Two);
+  }, []);
+  const handleSubmitOrganization = useCallback(() => {
+    setActive(Step.Three);
+  }, []);
+
   return (
     <Box m={20}>
       <Stepper active={active} mb={20}>
@@ -69,7 +102,7 @@ const Home: NextPage = () => {
                 />
               </T.Body>
               <Image height={360} my={6} radius="md" src="owner.jpg" />
-              <Button mt={8}>
+              <Button mt={8} onClick={goToStepTwo}>
                 <FormattedMessage
                   defaultMessage="Create your own farm"
                   description="Button caption to start the creation of a new farm organization when onboarding."
@@ -99,6 +132,70 @@ const Home: NextPage = () => {
             </Paper>
           </Group>
         </>
+      ) : null}
+      {active === Step.Two ? (
+        <Center>
+          <Stack>
+            <T.Title>
+              <FormattedMessage
+                defaultMessage="Tell us about your farm"
+                description="Message above a form allowing the user to enter details about a farm when creating one as part of onboarding"
+              />
+            </T.Title>
+            <Paper className={classes.stepTwoForm} p={16} shadow="md">
+              <Stack spacing="sm">
+                <TextInput
+                  label={intl.formatMessage({
+                    defaultMessage: 'Name',
+                    description: 'Label for a text input for the name of an organization'
+                  })}
+                  placeholder={intl.formatMessage({
+                    defaultMessage: "e.g. Francine's Fine Fruits",
+                    description:
+                      'Example name of a farm used as a placeholder in the input for a farm name'
+                  })}
+                />
+                <Radio.Group
+                  label={intl.formatMessage({
+                    defaultMessage: 'System of units',
+                    description:
+                      'Label for radio button group selecting the unit system (imperial or metric) for the organization'
+                  })}
+                  value={UnitSystem.Imperial}
+                >
+                  <Radio
+                    label={intl.formatMessage({
+                      defaultMessage: 'Imperial',
+                      description: 'Radio button label for the imperial system of units'
+                    })}
+                    value={UnitSystem.Imperial}
+                  />
+                  <Radio
+                    label={intl.formatMessage({
+                      defaultMessage: 'Metric',
+                      description: 'Radio button label for the metric system of units'
+                    })}
+                    value={UnitSystem.Metric}
+                  />
+                </Radio.Group>
+              </Stack>
+              <Group position="right">
+                <Button color="davysGrey" onClick={goToStepOne} variant="light">
+                  <FormattedMessage
+                    defaultMessage="Back"
+                    description="Label of button that brings you back one step in the onboarding process"
+                  />
+                </Button>
+                <Button onClick={handleSubmitOrganization}>
+                  <FormattedMessage
+                    defaultMessage="Submit farm details"
+                    description="Label of button that creates a new farm in the onboarding process"
+                  />
+                </Button>
+              </Group>
+            </Paper>
+          </Stack>
+        </Center>
       ) : null}
     </Box>
   );
