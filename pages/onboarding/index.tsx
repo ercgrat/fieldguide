@@ -11,12 +11,15 @@ import {
   SimpleGrid,
   Stack,
   Stepper,
-  TextInput
+  TextInput,
+  ThemeIcon
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { UnitSystem } from '@prisma/client';
+import Icon from 'components/Base/Icon';
 import T from 'components/Base/T';
 import {
+  OrganizationNameCheckQueryKey,
   useCreateOrganizationMutation,
   useCurrentOrganizationsQuery,
   useOrganizationNameCheckQuery
@@ -63,7 +66,7 @@ const Home: NextPage = () => {
   const router = useRouter();
 
   useEffect(() => {
-    if (hasLoadedOrganizations && !!organizations?.length) {
+    if (hasLoadedOrganizations && !!organizations?.length && router.pathname !== Route.Home) {
       router.push(Route.Home);
     }
   }, [hasLoadedOrganizations, organizations?.length, router]);
@@ -103,9 +106,16 @@ const Home: NextPage = () => {
 
   const { mutate, isLoading } = useCreateOrganizationMutation();
 
-  const { data, isLoading: isCheckingNameMatches } = useOrganizationNameCheckQuery(values.name);
+  const {
+    data: orgMatches,
+    isLoading: isCheckingNameMatches,
+    debouncedQueryState
+  } = useOrganizationNameCheckQuery(values.name);
+  const isNameCheckStale =
+    (debouncedQueryState.key[1] as OrganizationNameCheckQueryKey).name !== values.name;
+
   useEffect(() => {
-    if (data?.length) {
+    if (orgMatches?.length) {
       setFieldError(
         'name',
         intl.formatMessage({
@@ -115,7 +125,7 @@ const Home: NextPage = () => {
         })
       );
     }
-  }, [data, intl, setFieldError]);
+  }, [orgMatches, intl, setFieldError]);
 
   const goToStepOne = useCallback(() => {
     reset();
@@ -252,7 +262,21 @@ const Home: NextPage = () => {
                     })}
                     required
                     {...getInputProps('name')}
-                    rightSection={isCheckingNameMatches ? <Loader size="sm" /> : null}
+                    rightSection={
+                      isCheckingNameMatches ? (
+                        <Loader size="sm" />
+                      ) : values.name?.length && !isNameCheckStale ? (
+                        !orgMatches?.length ? (
+                          <ThemeIcon color="honeydew" variant="filled">
+                            <Icon.Check />
+                          </ThemeIcon>
+                        ) : (
+                          <ThemeIcon color="cinnabar" variant="light">
+                            <Icon.X />
+                          </ThemeIcon>
+                        )
+                      ) : null
+                    }
                   />
                   <TextInput
                     label={intl.formatMessage({

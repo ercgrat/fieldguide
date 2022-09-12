@@ -25,9 +25,13 @@ export const useCurrentOrganizationsQuery = () => {
   );
 };
 
+export type OrganizationNameCheckQueryKey = {
+  name: string;
+};
 export const useOrganizationNameCheckQuery = (name: string) => {
+  const subKey: OrganizationNameCheckQueryKey = { name };
   return useDebouncedQuery<Organization[], Error>(
-    [QueryKey.Organization, { name }],
+    [QueryKey.Organization, subKey],
     async () => {
       const { data } = await axios.get<Organization[]>(urls.organizations({ name }));
       return data;
