@@ -55,6 +55,13 @@ model Organization {
   id         Int          @id @default(autoincrement())
   created_at DateTime     @default(now())
   name       String       @unique
+  street1    String
+  street2    String?
+  city       String
+  state      String
+  postCode   String
+  phone      String?
+  email      String
   unitSystem UnitSystem
   Membership Membership[]
   Crop       Crop[]

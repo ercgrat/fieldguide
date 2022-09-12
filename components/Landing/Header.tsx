@@ -5,18 +5,27 @@ import {
   Header as MantineHeader,
   Group,
   MediaQuery,
-  useMantineTheme
+  useMantineTheme,
+  createStyles
 } from '@mantine/core';
 import T from 'components/Base/T';
 import { FormattedMessage } from 'react-intl';
 import { useSession, signOut } from 'next-auth/react';
 
+const useStyles = createStyles(() => ({
+  header: {
+    maxWidth: '100vw'
+  }
+}));
+
 type Props = {
   isNavOpen: boolean;
   handleBurgerClick: () => void;
+  routeAllowsNavigation: boolean;
 };
-const Header: React.FC<Props> = ({ isNavOpen, handleBurgerClick }) => {
+const Header: React.FC<Props> = ({ isNavOpen, handleBurgerClick, routeAllowsNavigation }) => {
   const theme = useMantineTheme();
+  const { classes } = useStyles();
   const { data, status } = useSession();
   const isLoggedIn = status === 'authenticated';
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -27,18 +36,20 @@ const Header: React.FC<Props> = ({ isNavOpen, handleBurgerClick }) => {
   }, []);
 
   return (
-    <MantineHeader height={50} px={12}>
+    <MantineHeader className={classes.header} height={50} px={12}>
       <Group align="center" position="apart" style={{ height: '100%' }}>
         <Group>
-          <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
-            <Burger
-              color={theme.colors.davysGrey[6]}
-              mr="xl"
-              onClick={handleBurgerClick}
-              opened={isNavOpen}
-              size="sm"
-            />
-          </MediaQuery>
+          {routeAllowsNavigation ? (
+            <MediaQuery largerThan="sm" styles={{ display: 'none' }}>
+              <Burger
+                color={theme.colors.davysGrey[6]}
+                mr="xl"
+                onClick={handleBurgerClick}
+                opened={isNavOpen}
+                size="sm"
+              />
+            </MediaQuery>
+          ) : null}
           <T.Title>
             <FormattedMessage defaultMessage="Field Guide" description="Title of the app" />
           </T.Title>

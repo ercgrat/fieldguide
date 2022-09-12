@@ -13,7 +13,7 @@ export const useCurrentUserQuery = () => {
   return useQuery<User, Error>(
     [QueryKey.User, email],
     async () => {
-      const { data } = await axios.get<User>(urls.users.get({ email }));
+      const { data } = await axios.get<User>(urls.users({ email }));
       return data;
     },
     {

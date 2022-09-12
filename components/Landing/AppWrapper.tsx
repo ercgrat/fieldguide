@@ -4,6 +4,8 @@ import React, { useState, useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 import Header from './Header';
 import { useRedirects } from 'utils/router';
+import { useRouter } from 'next/router';
+import { Route } from 'utils/enums';
 
 const useStyles = createStyles(() => ({
   container: {
@@ -20,6 +22,8 @@ type Props = {
 const AppWrapper: React.FC<Props> = ({ children }) => {
   const { classes } = useStyles();
   const [isNavOpen, setIsNavOpen] = useState(false);
+  const router = useRouter();
+  const routeAllowsNavigation = router.pathname !== Route.Onboarding;
 
   const handleBurgerClick = useCallback(() => {
     setIsNavOpen(o => !o);
@@ -29,16 +33,24 @@ const AppWrapper: React.FC<Props> = ({ children }) => {
 
   return (
     <AppShell
-      header={<Header handleBurgerClick={handleBurgerClick} isNavOpen={isNavOpen} />}
+      header={
+        <Header
+          handleBurgerClick={handleBurgerClick}
+          isNavOpen={isNavOpen}
+          routeAllowsNavigation={routeAllowsNavigation}
+        />
+      }
       navbar={
-        <Navbar hidden={!isNavOpen} hiddenBreakpoint="sm" p="md" width={{ sm: 200, lg: 300 }}>
-          <T.Body>
-            <FormattedMessage
-              defaultMessage="Dashboard"
-              description="Title of the nav item for the dashboard screen"
-            />
-          </T.Body>
-        </Navbar>
+        routeAllowsNavigation ? (
+          <Navbar hidden={!isNavOpen} hiddenBreakpoint="sm" p="md" width={{ sm: 200, lg: 300 }}>
+            <T.Body>
+              <FormattedMessage
+                defaultMessage="Dashboard"
+                description="Title of the nav item for the dashboard screen"
+              />
+            </T.Body>
+          </Navbar>
+        ) : undefined
       }
     >
       <Container className={classes.container}>{children}</Container>

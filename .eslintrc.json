@@ -23,7 +23,7 @@
   },
   "plugins": ["react", "@typescript-eslint", "formatjs", "i18next"],
   "rules": {
-    "quotes": ["warn", "single"],
+    "quotes": ["warn", "single", { "avoidEscape": true }],
     "semi": ["error", "always"],
     "no-console": ["error"],
     "no-duplicate-imports": ["warn"],

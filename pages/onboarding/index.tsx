@@ -5,17 +5,29 @@ import {
   createStyles,
   Group,
   Image,
+  Loader,
   Paper,
   Radio,
+  SimpleGrid,
   Stack,
   Stepper,
   TextInput
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import { UnitSystem } from '@prisma/client';
 import T from 'components/Base/T';
+import {
+  useCreateOrganizationMutation,
+  useCurrentOrganizationsQuery,
+  useOrganizationNameCheckQuery
+} from 'fetch/organizations';
+import { useCurrentUserQuery } from 'fetch/users';
 import { NextPage } from 'next';
-import React, { useCallback, useState } from 'react';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
+import { Route } from 'utils/enums';
+import { validateEmail, validatePhoneNumber } from 'utils/validation';
 
 enum Step {
   One = 1,
@@ -24,9 +36,21 @@ enum Step {
 }
 
 const useStyles = createStyles(() => ({
+  stepOneGrid: {
+    width: '100%'
+  },
   stepTwoForm: {
-    width: '500px',
-    maxWidth: '100vh'
+    width: '450px',
+    maxWidth: '100vw'
+  },
+  cityInput: {
+    flexGrow: 1
+  },
+  stateInput: {
+    width: '60px'
+  },
+  postCodeInput: {
+    width: '100px'
   }
 }));
 
@@ -34,20 +58,81 @@ const Home: NextPage = () => {
   const intl = useIntl();
   const { classes } = useStyles();
   const [active, setActive] = useState(Step.One);
+  const { data: user } = useCurrentUserQuery();
+  const { data: organizations, isSuccess: hasLoadedOrganizations } = useCurrentOrganizationsQuery();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (hasLoadedOrganizations && !!organizations?.length) {
+      router.push(Route.Home);
+    }
+  }, [hasLoadedOrganizations, organizations?.length, router]);
+
+  const { getInputProps, reset, onSubmit, values, setFieldError } = useForm({
+    initialValues: {
+      name: '',
+      street1: '',
+      street2: '',
+      city: '',
+      state: '',
+      postCode: '',
+      email: '',
+      phone: '',
+      unitSystem: UnitSystem.Imperial
+    },
+    validate: {
+      email: v =>
+        validateEmail(v)
+          ? undefined
+          : intl.formatMessage({
+              defaultMessage: 'Enter a valid email address',
+              description:
+                'Validation message that appears when a user types in an invalid email address'
+            }),
+      phone: v =>
+        validatePhoneNumber(v)
+          ? undefined
+          : intl.formatMessage({
+              defaultMessage: 'Enter a valid phone number',
+              description:
+                'Validation message that appears when a user types in an invalid phone number'
+            })
+    },
+    validateInputOnChange: true
+  });
+
+  const { mutate, isLoading } = useCreateOrganizationMutation();
+
+  const { data, isLoading: isCheckingNameMatches } = useOrganizationNameCheckQuery(values.name);
+  useEffect(() => {
+    if (data?.length) {
+      setFieldError(
+        'name',
+        intl.formatMessage({
+          defaultMessage: 'This name is already taken. Please choose a different name.',
+          description:
+            'Error message shown when the name entered for a new farm matches an existing farm.'
+        })
+      );
+    }
+  }, [data, intl, setFieldError]);
 
   const goToStepOne = useCallback(() => {
+    reset();
     setActive(Step.One);
-  }, []);
+  }, [reset]);
   const goToStepTwo = useCallback(() => {
     setActive(Step.Two);
   }, []);
+
   const handleSubmitOrganization = useCallback(() => {
+    mutate({ ...values, userId: user?.id ?? '' });
     setActive(Step.Three);
-  }, []);
+  }, [mutate, user?.id, values]);
 
   return (
     <Box m={20}>
-      <Stepper active={active} mb={20}>
+      <Stepper active={active} breakpoint="sm" mb={20}>
         <Stepper.Step
           description={intl.formatMessage({
             defaultMessage: 'Tell us about yourself',
@@ -83,11 +168,20 @@ const Home: NextPage = () => {
         <>
           <T.Title mb={12}>
             <FormattedMessage
-              defaultMessage="Are you a farm owner or a farm employee?"
+              defaultMessage="Are you a farm owner or a farm worker?"
               description="Title of the first onboarding question"
             />
           </T.Title>
-          <Group align="start" grow position="apart">
+          <SimpleGrid
+            breakpoints={[
+              {
+                maxWidth: 800,
+                cols: 1
+              }
+            ]}
+            className={classes.stepOneGrid}
+            cols={2}
+          >
             <Paper p={16} shadow="sm">
               <T.Subtitle>
                 <FormattedMessage
@@ -130,71 +224,173 @@ const Home: NextPage = () => {
                 />
               </Button>
             </Paper>
-          </Group>
+          </SimpleGrid>
         </>
       ) : null}
       {active === Step.Two ? (
         <Center>
-          <Stack>
-            <T.Title>
-              <FormattedMessage
-                defaultMessage="Tell us about your farm"
-                description="Message above a form allowing the user to enter details about a farm when creating one as part of onboarding"
-              />
-            </T.Title>
-            <Paper className={classes.stepTwoForm} p={16} shadow="md">
-              <Stack spacing="sm">
-                <TextInput
-                  label={intl.formatMessage({
-                    defaultMessage: 'Name',
-                    description: 'Label for a text input for the name of an organization'
-                  })}
-                  placeholder={intl.formatMessage({
-                    defaultMessage: "e.g. Francine's Fine Fruits",
-                    description:
-                      'Example name of a farm used as a placeholder in the input for a farm name'
-                  })}
+          <form onSubmit={onSubmit(handleSubmitOrganization)}>
+            <Stack spacing="sm">
+              <T.Title>
+                <FormattedMessage
+                  defaultMessage="Tell us about your farm"
+                  description="Message above a form allowing the user to enter details about a farm when creating one as part of onboarding"
                 />
-                <Radio.Group
-                  label={intl.formatMessage({
-                    defaultMessage: 'System of units',
-                    description:
-                      'Label for radio button group selecting the unit system (imperial or metric) for the organization'
-                  })}
-                  value={UnitSystem.Imperial}
-                >
-                  <Radio
+              </T.Title>
+              <Paper className={classes.stepTwoForm} p={16} shadow="md">
+                <Stack spacing="sm">
+                  <TextInput
+                    autoFocus
                     label={intl.formatMessage({
-                      defaultMessage: 'Imperial',
-                      description: 'Radio button label for the imperial system of units'
+                      defaultMessage: 'Farm Name',
+                      description: 'Label for a text input for the name of an organization'
                     })}
-                    value={UnitSystem.Imperial}
+                    placeholder={intl.formatMessage({
+                      defaultMessage: "Francine's Fine Fruits",
+                      description:
+                        'Example name of a farm used as a placeholder in the input for a farm name'
+                    })}
+                    required
+                    {...getInputProps('name')}
+                    rightSection={isCheckingNameMatches ? <Loader size="sm" /> : null}
                   />
-                  <Radio
+                  <TextInput
                     label={intl.formatMessage({
-                      defaultMessage: 'Metric',
-                      description: 'Radio button label for the metric system of units'
+                      defaultMessage: 'Email',
+                      description: 'Label for a text input for the email address of a farm'
                     })}
-                    value={UnitSystem.Metric}
+                    placeholder={intl.formatMessage({
+                      defaultMessage: 'your.farm@gmail.com',
+                      description:
+                        'Example email address of a farm used as a placeholder in the input for a farm email address'
+                    })}
+                    required
+                    {...getInputProps('email')}
                   />
-                </Radio.Group>
-              </Stack>
-              <Group position="right">
-                <Button color="davysGrey" onClick={goToStepOne} variant="light">
-                  <FormattedMessage
-                    defaultMessage="Back"
-                    description="Label of button that brings you back one step in the onboarding process"
+                  <TextInput
+                    label={intl.formatMessage({
+                      defaultMessage: 'Phone Number',
+                      description: 'Label for a text input for the phone number of a farm'
+                    })}
+                    placeholder={intl.formatMessage({
+                      defaultMessage: '(555) 555-5555',
+                      description:
+                        'Example phone number of a farm used as a placeholder in the input for a farm phone number'
+                    })}
+                    required
+                    {...getInputProps('phone')}
                   />
-                </Button>
-                <Button onClick={handleSubmitOrganization}>
-                  <FormattedMessage
-                    defaultMessage="Submit farm details"
-                    description="Label of button that creates a new farm in the onboarding process"
+                  <TextInput
+                    label={intl.formatMessage({
+                      defaultMessage: 'Address 1',
+                      description: 'Label for a text input for the first address line of a farm'
+                    })}
+                    placeholder={intl.formatMessage({
+                      defaultMessage: '10 Eggplant Blvd',
+                      description:
+                        'Example address line of a farm used as a placeholder in the input for a farm address 1'
+                    })}
+                    required
+                    {...getInputProps('street1')}
                   />
-                </Button>
-              </Group>
-            </Paper>
-          </Stack>
+                  <TextInput
+                    label={intl.formatMessage({
+                      defaultMessage: 'Address 2',
+                      description: 'Label for a text input for the second address line of a farm'
+                    })}
+                    placeholder={intl.formatMessage({
+                      defaultMessage: 'APT 101',
+                      description:
+                        'Example address line of a farm used as a placeholder in the input for a farm address 2'
+                    })}
+                    {...getInputProps('street2')}
+                  />
+                  <Group align="start" position="apart">
+                    <TextInput
+                      className={classes.cityInput}
+                      label={intl.formatMessage({
+                        defaultMessage: 'City',
+                        description: 'Label for a text input for the state of a farm address'
+                      })}
+                      placeholder={intl.formatMessage({
+                        defaultMessage: 'Farmville',
+                        description:
+                          'Example city of a farm used as a placeholder in the input for a farm address city'
+                      })}
+                      required
+                      {...getInputProps('city')}
+                    />
+                    <TextInput
+                      className={classes.stateInput}
+                      label={intl.formatMessage({
+                        defaultMessage: 'State',
+                        description: 'Label for a text input for the state of a farm address'
+                      })}
+                      maxLength={2}
+                      placeholder={intl.formatMessage({
+                        defaultMessage: 'NY',
+                        description:
+                          'Example state of a farm used as a placeholder in the input for a farm address state'
+                      })}
+                      required
+                      {...getInputProps('state')}
+                    />
+                    <TextInput
+                      className={classes.postCodeInput}
+                      label={intl.formatMessage({
+                        defaultMessage: 'Post Code',
+                        description: 'Label for a text input for the post code of a farm address'
+                      })}
+                      placeholder={intl.formatMessage({
+                        defaultMessage: '12345',
+                        description:
+                          'Example post code of a farm used as a placeholder in the input for a farm address post code'
+                      })}
+                      required
+                      {...getInputProps('postCode')}
+                    />
+                  </Group>
+                  <Radio.Group
+                    label={intl.formatMessage({
+                      defaultMessage: 'System of Units',
+                      description:
+                        'Label for radio button group selecting the unit system (imperial or metric) for the organization'
+                    })}
+                    {...getInputProps('unitSystem')}
+                  >
+                    <Radio
+                      label={intl.formatMessage({
+                        defaultMessage: 'Imperial',
+                        description: 'Radio button label for the imperial system of units'
+                      })}
+                      value={UnitSystem.Imperial}
+                    />
+                    <Radio
+                      label={intl.formatMessage({
+                        defaultMessage: 'Metric',
+                        description: 'Radio button label for the metric system of units'
+                      })}
+                      value={UnitSystem.Metric}
+                    />
+                  </Radio.Group>
+                </Stack>
+                <Group mt={32} position="right">
+                  <Button color="davysGrey" onClick={goToStepOne} variant="light">
+                    <FormattedMessage
+                      defaultMessage="Back"
+                      description="Label of button that brings you back one step in the onboarding process"
+                    />
+                  </Button>
+                  <Button loading={isLoading} type="submit">
+                    <FormattedMessage
+                      defaultMessage="Create farm"
+                      description="Label of button that creates a new farm in the onboarding process"
+                    />
+                  </Button>
+                </Group>
+              </Paper>
+            </Stack>
+          </form>
         </Center>
       ) : null}
     </Box>

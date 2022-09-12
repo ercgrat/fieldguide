@@ -16,6 +16,21 @@ const themeOverrides: MantineThemeOverride = {
     md: 12,
     lg: 16,
     xl: 20
+  },
+  components: {
+    Radio: {
+      styles: {
+        inner: {
+          cursor: 'pointer'
+        },
+        label: {
+          cursor: 'pointer'
+        },
+        radio: {
+          cursor: 'pointer'
+        }
+      }
+    }
   }
 };
 
