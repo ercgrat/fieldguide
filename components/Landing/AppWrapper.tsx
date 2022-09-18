@@ -6,6 +6,7 @@ import Header from './Header';
 import { useRedirects } from 'utils/router';
 import { useRouter } from 'next/router';
 import { Route } from 'utils/enums';
+import Footer from './Footer';
 
 const useStyles = createStyles(() => ({
   container: {
@@ -33,6 +34,7 @@ const AppWrapper: React.FC<Props> = ({ children }) => {
 
   return (
     <AppShell
+      footer={<Footer />}
       header={
         <Header
           handleBurgerClick={handleBurgerClick}

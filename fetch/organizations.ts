@@ -1,5 +1,6 @@
 import { Organization } from '@prisma/client';
 import axios from 'axios';
+import { useMemo } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { APIRequestBody } from 'types/backend';
 import { QueryKey } from 'utils/enums';
@@ -29,18 +30,18 @@ export type OrganizationNameCheckQueryKey = {
   name: string;
 };
 export const useOrganizationNameCheckQuery = (name: string) => {
-  const subKey: OrganizationNameCheckQueryKey = { name };
-  return useDebouncedQuery<Organization[], Error>(
-    [QueryKey.Organization, subKey],
-    async () => {
+  const subKey: OrganizationNameCheckQueryKey = useMemo(() => ({ name }), [name]);
+  const queryKey = useMemo(() => [QueryKey.Organization, subKey], [subKey]);
+  const queryFn = useMemo(() => {
+    return async () => {
       const { data } = await axios.get<Organization[]>(urls.organizations({ name }));
       return data;
-    },
-    {
-      enabled: !!name,
-      onError: handleError
-    }
-  );
+    };
+  }, [name]);
+  return useDebouncedQuery<Organization[], Error>(queryKey, queryFn, {
+    enabled: !!name,
+    onError: handleError
+  });
 };
 
 export const useCreateOrganizationMutation = () => {

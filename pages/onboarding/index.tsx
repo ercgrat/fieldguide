@@ -1,6 +1,5 @@
 import {
   Box,
-  Button,
   Center,
   createStyles,
   Group,
@@ -15,9 +14,11 @@ import {
   ThemeIcon
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import { UnitSystem } from '@prisma/client';
+import { Role, UnitSystem } from '@prisma/client';
 import Icon from 'components/Base/Icon';
+import RadioCard from 'components/Base/RadioCard';
 import T from 'components/Base/T';
+import OnboardingFooter from 'components/Onboarding/OnboardingFooter';
 import {
   OrganizationNameCheckQueryKey,
   useCreateOrganizationMutation,
@@ -30,9 +31,10 @@ import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Route } from 'utils/enums';
+import { useFooterPortal } from 'utils/nav';
 import { validateEmail, validatePhoneNumber } from 'utils/validation';
 
-enum Step {
+export enum OnboardingStep {
   One = 1,
   Two = 2,
   Three = 3
@@ -54,16 +56,24 @@ const useStyles = createStyles(() => ({
   },
   postCodeInput: {
     width: '100px'
+  },
+  invisible: {
+    visibility: 'hidden'
   }
 }));
 
 const Home: NextPage = () => {
   const intl = useIntl();
   const { classes } = useStyles();
-  const [active, setActive] = useState(Step.One);
+  const [active, setActive] = useState(OnboardingStep.One);
   const { data: user } = useCurrentUserQuery();
   const { data: organizations, isSuccess: hasLoadedOrganizations } = useCurrentOrganizationsQuery();
   const router = useRouter();
+
+  const [role, setRole] = useState<Role>(Role.Owner);
+  const handleChangeRole = useCallback((value: Role) => {
+    setRole(value);
+  }, []);
 
   useEffect(() => {
     if (hasLoadedOrganizations && !!organizations?.length && router.pathname !== Route.Home) {
@@ -129,16 +139,18 @@ const Home: NextPage = () => {
 
   const goToStepOne = useCallback(() => {
     reset();
-    setActive(Step.One);
+    setActive(OnboardingStep.One);
   }, [reset]);
   const goToStepTwo = useCallback(() => {
-    setActive(Step.Two);
+    setActive(OnboardingStep.Two);
   }, []);
 
   const handleSubmitOrganization = useCallback(() => {
     mutate({ ...values, userId: user?.id ?? '' });
-    setActive(Step.Three);
+    setActive(OnboardingStep.Three);
   }, [mutate, user?.id, values]);
+
+  const FooterPortal = useFooterPortal();
 
   return (
     <Box m={20}>
@@ -174,72 +186,65 @@ const Home: NextPage = () => {
           })}
         />
       </Stepper>
-      {active === Step.One ? (
-        <>
+      {active === OnboardingStep.One ? (
+        <Box>
           <T.Title mb={12}>
             <FormattedMessage
               defaultMessage="Are you a farm owner or a farm worker?"
               description="Title of the first onboarding question"
             />
           </T.Title>
-          <SimpleGrid
-            breakpoints={[
-              {
-                maxWidth: 800,
-                cols: 1
-              }
-            ]}
-            className={classes.stepOneGrid}
-            cols={2}
-          >
-            <Paper p={16} shadow="sm">
-              <T.Subtitle>
-                <FormattedMessage
-                  defaultMessage="Owner"
-                  description="Title of onboarding section for farm owners"
-                />
-              </T.Subtitle>
-              <T.Body>
-                <FormattedMessage
-                  defaultMessage="Select this option if you are the owner of a farm business or have never used FieldGuide before."
-                  description="Instructions for the 'Create your own farm' option when onboarding a new organization."
-                />
-              </T.Body>
-              <Image height={360} my={6} radius="md" src="owner.jpg" />
-              <Button mt={8} onClick={goToStepTwo}>
-                <FormattedMessage
-                  defaultMessage="Create your own farm"
-                  description="Button caption to start the creation of a new farm organization when onboarding."
-                />
-              </Button>
-            </Paper>
-            <Paper p={16} shadow="sm">
-              <T.Subtitle>
-                <FormattedMessage
-                  defaultMessage="Worker"
-                  description="Title of onboarding section for farm workers"
-                />
-              </T.Subtitle>
-              <T.Body>
-                <FormattedMessage
-                  defaultMessage="Select this option if you are a farm employee and your manager already has a farm set up on FieldGuide."
-                  description="Instructions for the 'Join an existing farm' option when onboarding a new organization."
-                />
-              </T.Body>
-              <Image height={360} my={6} radius="md" src="workers.jpg" />
-              <Button mt={8}>
-                <FormattedMessage
-                  defaultMessage="Find your farm"
-                  description="Button caption find an existing farm organization when onboarding."
-                />
-              </Button>
-            </Paper>
-          </SimpleGrid>
-        </>
+          <Radio.Group onChange={handleChangeRole} size="lg" value={role}>
+            <SimpleGrid
+              breakpoints={[
+                {
+                  maxWidth: 800,
+                  cols: 1
+                }
+              ]}
+              className={classes.stepOneGrid}
+              cols={2}
+            >
+              <RadioCard
+                label={intl.formatMessage({
+                  defaultMessage: 'Owner',
+                  description: 'Title of onboarding section for farm owners'
+                })}
+                selectedValue={role}
+                value={Role.Owner}
+              >
+                <T.Body>
+                  <FormattedMessage
+                    defaultMessage="Select this option if you are the owner of a farm business or have never used FieldGuide before."
+                    description="Instructions for the 'Create your own farm' option when onboarding a new organization."
+                  />
+                </T.Body>
+                <Image height={360} my={6} radius="md" src="owner.jpg" />
+              </RadioCard>
+              <RadioCard
+                label={intl.formatMessage({
+                  defaultMessage: 'Worker',
+                  description: 'Title of onboarding section for farm workers'
+                })}
+                selectedValue={role}
+                value={Role.Member}
+              >
+                <T.Body>
+                  <FormattedMessage
+                    defaultMessage="Select this option if you are a farm employee and your manager already has a farm set up on FieldGuide."
+                    description="Instructions for the 'Join an existing farm' option when onboarding a new organization."
+                  />
+                </T.Body>
+                <Image height={360} my={6} radius="md" src="workers.jpg" />
+              </RadioCard>
+            </SimpleGrid>
+          </Radio.Group>
+        </Box>
       ) : null}
-      {active === Step.Two ? (
+      {active === OnboardingStep.Two ? (
         <Center>
           <form onSubmit={onSubmit(handleSubmitOrganization)}>
+            <button className={classes.invisible} type="submit" />
             <Stack spacing="sm">
               <T.Title>
                 <FormattedMessage
@@ -398,25 +403,20 @@ const Home: NextPage = () => {
                     />
                   </Radio.Group>
                 </Stack>
-                <Group mt={32} position="right">
-                  <Button color="davysGrey" onClick={goToStepOne} variant="light">
-                    <FormattedMessage
-                      defaultMessage="Back"
-                      description="Label of button that brings you back one step in the onboarding process"
-                    />
-                  </Button>
-                  <Button loading={isLoading} type="submit">
-                    <FormattedMessage
-                      defaultMessage="Create farm"
-                      description="Label of button that creates a new farm in the onboarding process"
-                    />
-                  </Button>
-                </Group>
               </Paper>
             </Stack>
           </form>
         </Center>
       ) : null}
+      <FooterPortal>
+        <OnboardingFooter
+          active={active}
+          goToStepOne={goToStepOne}
+          goToStepTwo={goToStepTwo}
+          isLoading={isLoading}
+          onSubmitForm={handleSubmitOrganization}
+        />
+      </FooterPortal>
     </Box>
   );
 };
