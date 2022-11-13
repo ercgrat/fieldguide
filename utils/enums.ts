@@ -1,10 +1,12 @@
 export enum QueryKey {
-  User = 'User',
+  Crop = 'Crop',
   Login = 'Login',
-  Organization = 'Organization'
+  Organization = 'Organization',
+  User = 'User'
 }
 
 export enum Route {
+  Crops = '/crops',
   Home = '/home',
   Login = '/',
   Onboarding = '/onboarding'

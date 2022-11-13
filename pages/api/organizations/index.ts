@@ -87,11 +87,11 @@ const createOrganization = (req: NextApiRequest, res: NextApiResponse<Organizati
         res.status(StatusCodes.OK).send(newOrg);
         resolve(newOrg);
       })
-      .catch(e => {
+      .catch((e: Error) => {
         res
           .status(StatusCodes.INTERNAL_SERVER_ERROR)
           .setHeader(HttpResponseHeader.Error, JSON.stringify(e));
-        reject();
+        reject(e.message);
       });
   });
 };
