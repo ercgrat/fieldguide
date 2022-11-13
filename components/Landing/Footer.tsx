@@ -23,16 +23,21 @@ const Footer: React.FC = () => {
   const ref = useRef<HTMLDivElement>(null);
   const [height, setHeight] = useState(0);
   useEffect(() => {
-    const observer = new ResizeObserver(entries => {
+    const observer = new MutationObserver(entries => {
       entries.forEach(entry => {
-        setHeight(entry.target.scrollHeight);
+        setHeight((entry.target as HTMLElement).scrollHeight);
       });
     });
 
     const footer = ref.current;
     if (footer) {
-      observer.observe(footer);
-      return () => observer.unobserve(footer);
+      observer.observe(footer, {
+        childList: true,
+        subtree: true
+      });
+      return () => {
+        observer.disconnect();
+      };
     }
   });
 
