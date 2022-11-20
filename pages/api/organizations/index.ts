@@ -1,12 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { Organization, UnitSystem, Role } from '@prisma/client';
+import { Organization, UnitSystem } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
-import { db } from 'utils/db';
 import Joi, { AnySchema } from 'joi';
 import { RequestSchema, withHttpMethods, withValidation } from 'utils/middleware';
 import { validateEmail, validatePhoneNumber } from 'utils/validation';
 import { HttpMethod, HttpResponseHeader } from 'utils/enums';
 import { APIQueryParams, APIRequestBody } from 'types/backend';
+import CreateOrganizationCommand from 'db/organizations/CreateOrganizationCommand';
+import { SequentialTransaction } from 'db/Transaction';
+import GetOrganizationCommand from 'db/organizations/GetOrganizationCommand';
 
 const getSchema: RequestSchema = Joi.object<Record<keyof NextApiRequest, AnySchema>>({
   query: Joi.object<APIQueryParams.Organization>({
@@ -38,22 +40,11 @@ const getOrganizations = (req: NextApiRequest, res: NextApiResponse<Organization
   const { userId, name } = query;
 
   return new Promise((resolve, reject) => {
-    db.organization
-      .findMany({
-        where: {
-          name,
-          ...(userId
-            ? {
-                Membership: {
-                  some: {
-                    userId
-                  }
-                }
-              }
-            : {})
-        }
-      })
-      .then(organizations => {
+    const getOrganizationsCommand = new GetOrganizationCommand(userId ?? '', name);
+    const transaction = new SequentialTransaction([getOrganizationsCommand]);
+    transaction
+      .execute()
+      .then(([organizations]) => {
         if (organizations) {
           res.status(StatusCodes.OK).json(organizations);
         } else {
@@ -61,8 +52,10 @@ const getOrganizations = (req: NextApiRequest, res: NextApiResponse<Organization
         }
         resolve(organizations);
       })
-      .catch(() => {
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR);
+      .catch((e: Error) => {
+        res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .setHeader(HttpResponseHeader.Error, JSON.stringify(e));
         reject();
       });
   });
@@ -71,19 +64,11 @@ const getOrganizations = (req: NextApiRequest, res: NextApiResponse<Organization
 const createOrganization = (req: NextApiRequest, res: NextApiResponse<Organization>) => {
   const { userId, ...organization } = req.body as APIRequestBody.CreateOrganization;
   return new Promise((resolve, reject) => {
-    db.organization
-      .create({
-        data: {
-          ...organization,
-          Membership: {
-            create: {
-              role: Role.Owner,
-              userId
-            }
-          }
-        }
-      })
-      .then(newOrg => {
+    const createOrganizationCommand = new CreateOrganizationCommand(organization, userId);
+    const transaction = new SequentialTransaction([createOrganizationCommand]);
+    transaction
+      .execute()
+      .then(([newOrg]) => {
         res.status(StatusCodes.OK).send(newOrg);
         resolve(newOrg);
       })

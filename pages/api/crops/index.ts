@@ -1,11 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Crop } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
-import { db } from 'utils/db';
 import Joi from 'joi';
 import { RequestSchema, withHttpMethods, withValidation } from 'utils/middleware';
 import { HttpMethod, HttpResponseHeader } from 'utils/enums';
 import { APIQueryParams, APIRequestBody } from 'types/backend';
+import { SequentialTransaction } from 'db/Transaction';
+import CreateCropCommand from 'db/crops/CreateCropCommand';
+import GetCropCommand from 'db/crops/GetCropCommand';
 
 const getSchema: RequestSchema = Joi.object({
   query: Joi.object<APIQueryParams.Crop>({
@@ -26,13 +28,12 @@ const getCrops = (req: NextApiRequest, res: NextApiResponse<Crop[]>) => {
   const query = req.query as APIQueryParams.Crop;
   const { organizationId } = query;
   return new Promise((resolve, reject) => {
-    db.crop
-      .findMany({
-        where: {
-          organizationId: Number(organizationId)
-        }
-      })
-      .then(crops => {
+    const getCropCommand = new GetCropCommand(Number(organizationId));
+
+    const transaction = new SequentialTransaction([getCropCommand]);
+    transaction
+      .execute()
+      .then(([crops]) => {
         if (crops) {
           res.status(StatusCodes.OK).json(crops);
         } else {
@@ -50,11 +51,11 @@ const getCrops = (req: NextApiRequest, res: NextApiResponse<Crop[]>) => {
 const createCrop = (req: NextApiRequest, res: NextApiResponse<Crop>) => {
   const reqBodyCrop = req.body as APIRequestBody.CreateCrop;
   return new Promise((resolve, reject) => {
-    db.crop
-      .create({
-        data: reqBodyCrop
-      })
-      .then(crop => {
+    const createCropCommand = new CreateCropCommand(reqBodyCrop);
+    const transaction = new SequentialTransaction([createCropCommand]);
+    transaction
+      .execute()
+      .then(([crop]) => {
         res.status(StatusCodes.OK).send(crop);
         resolve(crop);
       })

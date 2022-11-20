@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { User } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
-import { db } from 'utils/db';
+import { db } from 'db';
 import Joi from 'joi';
 import { RequestSchema, withHttpMethods, withValidation } from 'utils/middleware';
 import { HttpMethod } from 'utils/enums';
