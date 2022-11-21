@@ -28,7 +28,7 @@ import {
 import { useCurrentUserQuery } from 'fetch/users';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Route } from 'utils/enums';
 import { useFooterPortal } from 'utils/nav';
@@ -69,6 +69,7 @@ const Home: NextPage = () => {
   const { data: user } = useCurrentUserQuery();
   const { data: organizations, isSuccess: hasLoadedOrganizations } = useCurrentOrganizationsQuery();
   const router = useRouter();
+  const submitButtonRef = useRef<HTMLButtonElement>(null);
 
   const [role, setRole] = useState<Role>(Role.Owner);
   const handleChangeRole = useCallback((value: Role) => {
@@ -94,6 +95,14 @@ const Home: NextPage = () => {
       unitSystem: UnitSystem.Imperial
     },
     validate: {
+      name: v =>
+        v
+          ? undefined
+          : intl.formatMessage({
+              defaultMessage: 'Name is required',
+              description:
+                'Validation message that appears when a user does not type in a company name'
+            }),
       email: v =>
         validateEmail(v)
           ? undefined
@@ -114,7 +123,9 @@ const Home: NextPage = () => {
     validateInputOnChange: true
   });
 
-  const { mutate, isLoading } = useCreateOrganizationMutation();
+  const { mutate, isLoading } = useCreateOrganizationMutation({
+    onSuccess: () => setActive(OnboardingStep.Three)
+  });
 
   const {
     data: orgMatches,
@@ -147,7 +158,6 @@ const Home: NextPage = () => {
 
   const handleSubmitOrganization = useCallback(() => {
     mutate({ ...values, userId: user?.id ?? '' });
-    setActive(OnboardingStep.Three);
   }, [mutate, user?.id, values]);
 
   const FooterPortal = useFooterPortal();
@@ -244,7 +254,7 @@ const Home: NextPage = () => {
       {active === OnboardingStep.Two ? (
         <Center>
           <form onSubmit={onSubmit(handleSubmitOrganization)}>
-            <button className={classes.invisible} type="submit" />
+            <button className={classes.invisible} ref={submitButtonRef} type="submit" />
             <Stack spacing="sm">
               <T.Title>
                 <FormattedMessage
@@ -414,7 +424,7 @@ const Home: NextPage = () => {
           goToStepOne={goToStepOne}
           goToStepTwo={goToStepTwo}
           isLoading={isLoading}
-          onSubmitForm={handleSubmitOrganization}
+          onSubmitForm={() => submitButtonRef.current?.click()}
         />
       </FooterPortal>
     </Box>

@@ -44,12 +44,21 @@ export const useOrganizationNameCheckQuery = (name: string) => {
   });
 };
 
-export const useCreateOrganizationMutation = () => {
+export const useCreateOrganizationMutation = (args?: {
+  onSuccess?:
+    | ((
+        data: Organization,
+        variables: APIRequestBody.CreateOrganization,
+        context: unknown
+      ) => void | Promise<unknown>)
+    | undefined;
+}) => {
   return useMutation<Organization, Error, APIRequestBody.CreateOrganization>(
     [QueryKey.Organization],
     organization => axios.post(urls.organizations(), organization),
     {
-      onError: handleError
+      onError: handleError,
+      onSuccess: args?.onSuccess
     }
   );
 };

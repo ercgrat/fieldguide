@@ -3,11 +3,12 @@ import Joi, { AnySchema } from 'joi';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { HttpMethod, HttpResponseHeader } from './enums';
 
-export type RequestSchema = Joi.ObjectSchema<Record<keyof NextApiRequest, AnySchema>>;
-export const withValidation = <T>(
-  schemas: Partial<Record<HttpMethod, RequestSchema>>,
-  handler: (req: NextApiRequest, res: NextApiResponse<T>) => Promise<unknown> | undefined
-) => {
+export const withRouteSetup = <T>(args: {
+  schemas?: Partial<Record<HttpMethod, RequestSchema>>;
+  handlers: Partial<
+    Record<HttpMethod, (req: NextApiRequest, res: NextApiResponse) => Promise<unknown> | undefined>
+  >;
+}) => {
   return async (req: NextApiRequest, res: NextApiResponse<T>) => {
     const method = req.method as HttpMethod | undefined;
     if (!method) {
@@ -18,7 +19,7 @@ export const withValidation = <T>(
       return;
     }
 
-    const schema = schemas[method];
+    const schema = args.schemas?.[method];
     if (!schema) {
       res
         .status(StatusCodes.BAD_REQUEST)
@@ -36,26 +37,7 @@ export const withValidation = <T>(
       return;
     }
 
-    return handler(req, res);
-  };
-};
-
-export const withHttpMethods = (
-  handlers: Partial<
-    Record<HttpMethod, (req: NextApiRequest, res: NextApiResponse) => Promise<unknown> | undefined>
-  >
-) => {
-  return async (req: NextApiRequest, res: NextApiResponse) => {
-    const method = req.method as HttpMethod | undefined;
-    if (!method) {
-      res
-        .status(StatusCodes.BAD_REQUEST)
-        .setHeader(HttpResponseHeader.Error, 'No HTTP method specified')
-        .end();
-      return;
-    }
-
-    const handler = handlers[method];
+    const handler = args.handlers[method];
     if (!handler) {
       res
         .status(StatusCodes.BAD_REQUEST)
@@ -67,3 +49,5 @@ export const withHttpMethods = (
     return handler(req, res);
   };
 };
+
+export type RequestSchema = Joi.ObjectSchema<Record<keyof NextApiRequest, AnySchema>>;

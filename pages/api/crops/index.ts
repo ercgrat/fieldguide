@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Crop } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
 import Joi from 'joi';
-import { RequestSchema, withHttpMethods, withValidation } from 'utils/middleware';
+import { RequestSchema, withRouteSetup } from 'utils/middleware';
 import { HttpMethod, HttpResponseHeader } from 'utils/enums';
 import { APIQueryParams, APIRequestBody } from 'types/backend';
 import { SequentialTransaction } from 'db/Transaction';
@@ -68,13 +68,13 @@ const createCrop = (req: NextApiRequest, res: NextApiResponse<Crop>) => {
   });
 };
 
-export default withValidation(
-  {
+export default withRouteSetup({
+  schemas: {
     [HttpMethod.GET]: getSchema,
     [HttpMethod.POST]: postSchema
   },
-  withHttpMethods({
+  handlers: {
     [HttpMethod.GET]: getCrops,
     [HttpMethod.POST]: createCrop
-  })
-);
+  }
+});

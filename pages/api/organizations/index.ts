@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { Organization, UnitSystem } from '@prisma/client';
 import { StatusCodes } from 'http-status-codes';
 import Joi, { AnySchema } from 'joi';
-import { RequestSchema, withHttpMethods, withValidation } from 'utils/middleware';
+import { RequestSchema, withRouteSetup } from 'utils/middleware';
 import { validateEmail, validatePhoneNumber } from 'utils/validation';
 import { HttpMethod, HttpResponseHeader } from 'utils/enums';
 import { APIQueryParams, APIRequestBody } from 'types/backend';
@@ -22,7 +22,7 @@ const postSchema = Joi.object<Record<keyof NextApiRequest, AnySchema>>({
   body: Joi.object<APIRequestBody.CreateOrganization>({
     name: Joi.string().required(),
     street1: Joi.string().required(),
-    street2: Joi.string(),
+    street2: Joi.string().allow(''),
     city: Joi.string().required(),
     state: Joi.string().required(),
     postCode: Joi.string().required(),
@@ -81,14 +81,13 @@ const createOrganization = (req: NextApiRequest, res: NextApiResponse<Organizati
   });
 };
 
-const schemas = {
-  [HttpMethod.GET]: getSchema,
-  [HttpMethod.POST]: postSchema
-};
-export default withValidation(
-  schemas,
-  withHttpMethods({
+export default withRouteSetup({
+  schemas: {
+    [HttpMethod.GET]: getSchema,
+    [HttpMethod.POST]: postSchema
+  },
+  handlers: {
     [HttpMethod.GET]: getOrganizations,
     [HttpMethod.POST]: createOrganization
-  })
-);
+  }
+});
