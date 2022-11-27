@@ -23,7 +23,7 @@ const CropsPage: NextPage = () => {
   }, [closeAddCropModal]);
   return (
     <Box p={2}>
-      <Button mb={10} onClick={openAddCropModal} ref={addCropButtonRef}>
+      <Button mb={10} onClick={openAddCropModal} ref={addCropButtonRef} variant="primary">
         <FormattedMessage defaultMessage="Add crop" description="Button label for adding crops" />
       </Button>
       {isAddCropModalOpen && <AddCropModal onClose={handleCloseAddCropModal} />}

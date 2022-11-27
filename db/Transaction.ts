@@ -1,13 +1,12 @@
 import { db } from 'db';
 import { Command } from './Command';
 
-type UnwrapPromise<P> = P extends Promise<infer R> ? R : P;
 type UnwrapTuple<Tuple extends readonly Command<unknown>[]> = {
-  [K in keyof Tuple]: UnwrapPromise<Tuple[K]['execute']>;
+  [K in keyof Tuple]: Tuple[K] extends Command<infer X> ? X : never;
 };
 
-export class SequentialTransaction<TCommands extends readonly Command<unknown>[]> {
-  constructor(private commands: [...TCommands]) {
+export class SequentialTransaction<TCommands extends Command<unknown>[]> {
+  constructor(private commands: TCommands) {
     this.commands = commands;
   }
 

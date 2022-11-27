@@ -23,7 +23,7 @@ const variants: Record<ButtonVariant, SystemStyleInterpolation> = {
     color: 'bark.90',
     background: 'bark.15',
     border: 'solid 1px',
-    borderColor: 'bark.50',
+    borderColor: 'bark.30',
     _active: {
       background: 'bark.20'
     },
