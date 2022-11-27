@@ -1,17 +1,17 @@
-import { Button, Group } from '@mantine/core';
 import React, { useCallback } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
-import { showNotification } from '@mantine/notifications';
-import { signIn} from 'next-auth/react';
+import { signIn } from 'next-auth/react';
+import { Button, HStack, useToast } from 'fgui';
 
 const LoginButton: React.FC = () => {
   const intl = useIntl();
+  const toast = useToast();
 
   const logIn = useCallback(async () => {
     const res = await signIn('google');
     if (res?.error) {
-      showNotification({
-        message: intl.formatMessage(
+      toast({
+        description: intl.formatMessage(
           {
             defaultMessage: 'Failed to log in with Google: {message}',
             description: 'Error that appears when Google login fails.'
@@ -22,11 +22,11 @@ const LoginButton: React.FC = () => {
         )
       });
     }
-  }, [intl]);
+  }, [intl, toast]);
 
   return (
-    <Button color="cinnabar" onClick={logIn} radius="xl">
-      <Group>
+    <Button onClick={logIn}>
+      <HStack>
         <svg
           height="1em"
           version="1.1"
@@ -58,7 +58,7 @@ const LoginButton: React.FC = () => {
           defaultMessage="Log In with Google"
           description="Text on a button to log in with Google"
         />
-      </Group>
+      </HStack>
     </Button>
   );
 };

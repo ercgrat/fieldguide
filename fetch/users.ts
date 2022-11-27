@@ -3,12 +3,13 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useQuery } from 'react-query';
 import { QueryKey } from 'utils/enums';
-import { handleError } from 'utils/error';
+import { useErrorHandler } from 'utils/error';
 import urls from 'utils/urls';
 
 export const useCurrentUserQuery = () => {
   const { data: sessionData, status } = useSession();
   const email = sessionData?.user?.email ?? '';
+  const { handleError } = useErrorHandler();
 
   return useQuery<User, Error>(
     [QueryKey.User, email],

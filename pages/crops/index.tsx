@@ -1,15 +1,19 @@
-import { Button, Skeleton, Stack } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import AddCropModal from 'components/Catalog/AddCropModal';
 import { useCropsQuery } from 'fetch/crops';
+import { Box, Button, Skeleton, Stack, useDisclosure } from 'fgui';
 import { NextPage } from 'next';
 import React, { useCallback, useRef } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const CropsPage: NextPage = () => {
   const { data: crops, isLoading } = useCropsQuery();
-  const [isAddCropModalOpen, { open: openAddCropModal, close: closeAddCropModal }] =
-    useDisclosure(false);
+  const {
+    isOpen: isAddCropModalOpen,
+    onOpen: openAddCropModal,
+    onClose: closeAddCropModal
+  } = useDisclosure({
+    defaultIsOpen: false
+  });
   const addCropButtonRef = useRef<HTMLButtonElement>(null);
   const handleCloseAddCropModal = useCallback(() => {
     closeAddCropModal();
@@ -18,7 +22,7 @@ const CropsPage: NextPage = () => {
     });
   }, [closeAddCropModal]);
   return (
-    <>
+    <Box p={2}>
       <Button mb={10} onClick={openAddCropModal} ref={addCropButtonRef}>
         <FormattedMessage defaultMessage="Add crop" description="Button label for adding crops" />
       </Button>
@@ -35,7 +39,7 @@ const CropsPage: NextPage = () => {
           <div key={crop.id}>{crop.name}</div>
         ))}
       </Stack>
-    </>
+    </Box>
   );
 };
 

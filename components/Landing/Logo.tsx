@@ -1,35 +1,12 @@
 /* eslint-disable i18next/no-literal-string */
-import { createStyles, Group, Text } from '@mantine/core';
+import { HStack, T } from 'fgui';
 import { useRouter } from 'next/router';
 import React, { useCallback } from 'react';
-
-type StyleProps = {
-  isHomeLinkEnabled?: boolean;
-};
-const useStyles = createStyles((theme, { isHomeLinkEnabled }: StyleProps) => ({
-  purple: {
-    color: theme.colors.purple[5],
-    display: 'inline',
-    fontSize: 60
-  },
-  cinnabar: {
-    color: theme.colors.cinnabar[5],
-    fontStyle: 'italic',
-    display: 'inline',
-    fontSize: 60
-  },
-  logo: {
-    gap: 0,
-    pointerEvents: isHomeLinkEnabled ? 'all' : 'none',
-    cursor: 'pointer'
-  }
-}));
 
 type Props = {
   isHomeLinkEnabled?: boolean;
 };
-const Logo: React.FC<Props> = ({ isHomeLinkEnabled = true }) => {
-  const { classes } = useStyles({ isHomeLinkEnabled });
+const Logo: React.FC<Props> = () => {
   const router = useRouter();
 
   const handleLogoClick = useCallback(() => {
@@ -37,14 +14,9 @@ const Logo: React.FC<Props> = ({ isHomeLinkEnabled = true }) => {
   }, [router]);
 
   return (
-    <Group className={classes.logo} mt={40} onClick={handleLogoClick} spacing="xs">
-      <Text className={classes.purple} weight="bold">
-        Field Guide
-      </Text>
-      <Text className={classes.cinnabar} weight="bold">
-        !
-      </Text>
-    </Group>
+    <HStack mt={40} onClick={handleLogoClick} spacing="xs">
+      <T.H1>Field Guide!</T.H1>
+    </HStack>
   );
 };
 

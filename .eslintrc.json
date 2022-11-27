@@ -42,7 +42,7 @@
           "^[^A-Z]" /* Handles most false positives from legitimate, non-user-facing JSX attribute values */,
           "Relay"
         ],
-        "ignoreCallee": ["intl.formatMessage"],
+        "ignoreCallee": ["intl.formatMessage", "useStyleConfig"],
         "ignoreComponent": ["FormattedMessage"]
       }
     ],
@@ -65,7 +65,15 @@
     "react/jsx-no-constructed-context-values": ["error"],
     "react/jsx-handler-names": ["error"],
     "@typescript-eslint/no-non-null-assertion": ["error"],
-    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "vars": "local",
+        "varsIgnorePattern": "^_",
+        "args": "after-used",
+        "ignoreRestSiblings": true
+      }
+    ],
     "@typescript-eslint/no-shadow": ["error"]
   },
   "settings": {

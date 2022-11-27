@@ -1,24 +1,6 @@
-import {
-  Box,
-  Center,
-  createStyles,
-  Group,
-  Image,
-  Loader,
-  Paper,
-  Radio,
-  SimpleGrid,
-  Stack,
-  Stepper,
-  TextInput,
-  ThemeIcon
-} from '@mantine/core';
-import { useForm } from '@mantine/form';
 import { Role, UnitSystem } from '@prisma/client';
-import Icon from 'components/Base/Icon';
 import RadioCard from 'components/Base/RadioCard';
-import T from 'components/Base/T';
-import OnboardingFooter from 'components/Onboarding/OnboardingFooter';
+import { useForm } from 'react-hook-form';
 import {
   OrganizationNameCheckQueryKey,
   useCreateOrganizationMutation,
@@ -31,8 +13,24 @@ import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Route } from 'utils/enums';
-import { useFooterPortal } from 'utils/nav';
 import { validateEmail, validatePhoneNumber } from 'utils/validation';
+import { APIRequestBody } from 'types/backend';
+import {
+  Box,
+  Card,
+  Flex,
+  FooterPortal,
+  HStack,
+  Icon,
+  Image,
+  Radio,
+  RadioGroup,
+  Spinner,
+  T,
+  TextInput,
+  VStack
+} from 'fgui';
+import Footer from 'components/Onboarding/Footer';
 
 export enum OnboardingStep {
   One = 1,
@@ -40,36 +38,17 @@ export enum OnboardingStep {
   Three = 3
 }
 
-const useStyles = createStyles(() => ({
-  stepOneGrid: {
-    width: '100%'
-  },
-  stepTwoForm: {
-    width: '450px',
-    maxWidth: '100vw'
-  },
-  cityInput: {
-    flexGrow: 1
-  },
-  stateInput: {
-    width: '60px'
-  },
-  postCodeInput: {
-    width: '100px'
-  },
-  invisible: {
-    visibility: 'hidden'
-  }
-}));
-
 const Home: NextPage = () => {
   const intl = useIntl();
-  const { classes } = useStyles();
   const [active, setActive] = useState(OnboardingStep.One);
   const { data: user } = useCurrentUserQuery();
-  const { data: organizations, isSuccess: hasLoadedOrganizations } = useCurrentOrganizationsQuery();
+  const {
+    data: organizations,
+    isSuccess: hasLoadedOrganizations,
+    isLoading
+  } = useCurrentOrganizationsQuery();
   const router = useRouter();
-  const submitButtonRef = useRef<HTMLButtonElement>(null);
+  const submitButtonRef = useRef(null);
 
   const [role, setRole] = useState<Role>(Role.Owner);
   const handleChangeRole = useCallback((value: Role) => {
@@ -82,8 +61,14 @@ const Home: NextPage = () => {
     }
   }, [hasLoadedOrganizations, organizations?.length, router]);
 
-  const { getInputProps, reset, onSubmit, values, setFieldError } = useForm({
-    initialValues: {
+  const {
+    reset,
+    handleSubmit: handleSubmitWrapper,
+    register,
+    watch,
+    setError
+  } = useForm<APIRequestBody.CreateOrganization>({
+    defaultValues: {
       name: '',
       street1: '',
       street2: '',
@@ -93,60 +78,34 @@ const Home: NextPage = () => {
       email: '',
       phone: '',
       unitSystem: UnitSystem.Imperial
-    },
-    validate: {
-      name: v =>
-        v
-          ? undefined
-          : intl.formatMessage({
-              defaultMessage: 'Name is required',
-              description:
-                'Validation message that appears when a user does not type in a company name'
-            }),
-      email: v =>
-        validateEmail(v)
-          ? undefined
-          : intl.formatMessage({
-              defaultMessage: 'Enter a valid email address',
-              description:
-                'Validation message that appears when a user types in an invalid email address'
-            }),
-      phone: v =>
-        validatePhoneNumber(v)
-          ? undefined
-          : intl.formatMessage({
-              defaultMessage: 'Enter a valid phone number',
-              description:
-                'Validation message that appears when a user types in an invalid phone number'
-            })
-    },
-    validateInputOnChange: true
+    }
   });
 
-  const { mutate, isLoading } = useCreateOrganizationMutation({
+  const { mutate } = useCreateOrganizationMutation({
     onSuccess: () => setActive(OnboardingStep.Three)
   });
 
+  const name = watch('name');
+  const unitSystem = watch('unitSystem');
   const {
     data: orgMatches,
     isLoading: isCheckingNameMatches,
     debouncedQueryState
-  } = useOrganizationNameCheckQuery(values.name);
+  } = useOrganizationNameCheckQuery(name);
   const isNameCheckStale =
-    (debouncedQueryState.key[1] as OrganizationNameCheckQueryKey).name !== values.name;
+    (debouncedQueryState.key[1] as OrganizationNameCheckQueryKey).name !== name;
 
   useEffect(() => {
     if (orgMatches?.length) {
-      setFieldError(
-        'name',
-        intl.formatMessage({
+      setError('name', {
+        message: intl.formatMessage({
           defaultMessage: 'This name is already taken. Please choose a different name.',
           description:
             'Error message shown when the name entered for a new farm matches an existing farm.'
         })
-      );
+      });
     }
-  }, [orgMatches, intl, setFieldError]);
+  }, [orgMatches, intl, setError]);
 
   const goToStepOne = useCallback(() => {
     reset();
@@ -156,65 +115,25 @@ const Home: NextPage = () => {
     setActive(OnboardingStep.Two);
   }, []);
 
-  const handleSubmitOrganization = useCallback(() => {
-    mutate({ ...values, userId: user?.id ?? '' });
-  }, [mutate, user?.id, values]);
-
-  const FooterPortal = useFooterPortal();
+  const handleSubmitOrganization = useCallback(
+    (values: APIRequestBody.CreateOrganization) => {
+      mutate({ ...values, userId: user?.id ?? '' });
+    },
+    [mutate, user?.id]
+  );
 
   return (
-    <Box m={20}>
-      <Stepper active={active} breakpoint="sm" mb={20}>
-        <Stepper.Step
-          description={intl.formatMessage({
-            defaultMessage: 'Tell us about yourself',
-            description: 'Caption of the first step of onboarding screen'
-          })}
-          label={intl.formatMessage({
-            defaultMessage: 'First step',
-            description: 'Label for the first step of the onboarding process'
-          })}
-        />
-        <Stepper.Step
-          description={intl.formatMessage({
-            defaultMessage: 'Create your organization',
-            description: 'Caption of the second step of onboarding screen'
-          })}
-          label={intl.formatMessage({
-            defaultMessage: 'Second step',
-            description: 'Label for the second step of the onboarding process'
-          })}
-        />
-        <Stepper.Step
-          description={intl.formatMessage({
-            defaultMessage: 'Build your catalog',
-            description: 'Caption of the third step of onboarding screen'
-          })}
-          label={intl.formatMessage({
-            defaultMessage: 'Last step',
-            description: 'Label for the third step of the onboarding process'
-          })}
-        />
-      </Stepper>
+    <Box m={6}>
       {active === OnboardingStep.One ? (
-        <Box>
-          <T.Title mb={12}>
+        <VStack alignItems="flex-start">
+          <T.H2>
             <FormattedMessage
               defaultMessage="Are you a farm owner or a farm worker?"
               description="Title of the first onboarding question"
             />
-          </T.Title>
-          <Radio.Group onChange={handleChangeRole} size="lg" value={role}>
-            <SimpleGrid
-              breakpoints={[
-                {
-                  maxWidth: 800,
-                  cols: 1
-                }
-              ]}
-              className={classes.stepOneGrid}
-              cols={2}
-            >
+          </T.H2>
+          <RadioGroup onChange={handleChangeRole} pt={4} size="lg" value={role}>
+            <Flex flexDirection={['column', 'column', 'row']} gap={2}>
               <RadioCard
                 label={intl.formatMessage({
                   defaultMessage: 'Owner',
@@ -223,13 +142,13 @@ const Home: NextPage = () => {
                 selectedValue={role}
                 value={Role.Owner}
               >
-                <T.Body>
+                <T.Body2>
                   <FormattedMessage
                     defaultMessage="Select this option if you are the owner of a farm business or have never used FieldGuide before."
                     description="Instructions for the 'Create your own farm' option when onboarding a new organization."
                   />
-                </T.Body>
-                <Image height={360} my={6} radius="md" src="owner.jpg" />
+                </T.Body2>
+                <Image fit="cover" height={360} my={6} src="owner.jpg" />
               </RadioCard>
               <RadioCard
                 label={intl.formatMessage({
@@ -239,31 +158,31 @@ const Home: NextPage = () => {
                 selectedValue={role}
                 value={Role.Member}
               >
-                <T.Body>
+                <T.Body2>
                   <FormattedMessage
                     defaultMessage="Select this option if you are a farm employee and your manager already has a farm set up on FieldGuide."
                     description="Instructions for the 'Join an existing farm' option when onboarding a new organization."
                   />
-                </T.Body>
-                <Image height={360} my={6} radius="md" src="workers.jpg" />
+                </T.Body2>
+                <Image fit="cover" height={360} my={6} src="workers.jpg" />
               </RadioCard>
-            </SimpleGrid>
-          </Radio.Group>
-        </Box>
+            </Flex>
+          </RadioGroup>
+        </VStack>
       ) : null}
       {active === OnboardingStep.Two ? (
-        <Center>
-          <form onSubmit={onSubmit(handleSubmitOrganization)}>
-            <button className={classes.invisible} ref={submitButtonRef} type="submit" />
-            <Stack spacing="sm">
-              <T.Title>
-                <FormattedMessage
-                  defaultMessage="Tell us about your farm"
-                  description="Message above a form allowing the user to enter details about a farm when creating one as part of onboarding"
-                />
-              </T.Title>
-              <Paper className={classes.stepTwoForm} p={16} shadow="md">
-                <Stack spacing="sm">
+        <VStack alignItems="flex-start" w="100%">
+          <T.H2>
+            <FormattedMessage
+              defaultMessage="Tell us about your farm"
+              description="Message above a form allowing the user to enter details about a farm when creating one as part of onboarding"
+            />
+          </T.H2>
+          <Box alignSelf="center">
+            <form onSubmit={handleSubmitWrapper(handleSubmitOrganization)}>
+              <Box as="button" display="none" ref={submitButtonRef} type="submit" />
+              <Card p={6} shadow="md">
+                <VStack alignItems="stretch">
                   <TextInput
                     autoFocus
                     label={intl.formatMessage({
@@ -276,19 +195,24 @@ const Home: NextPage = () => {
                         'Example name of a farm used as a placeholder in the input for a farm name'
                     })}
                     required
-                    {...getInputProps('name')}
-                    rightSection={
+                    {...register('name', {
+                      validate: (v: string | undefined) =>
+                        v
+                          ? undefined
+                          : intl.formatMessage({
+                              defaultMessage: 'Name is required',
+                              description:
+                                'Validation message that appears when a user does not type in a company name'
+                            })
+                    })}
+                    rightAddon={
                       isCheckingNameMatches ? (
-                        <Loader size="sm" />
-                      ) : values.name?.length && !isNameCheckStale ? (
+                        <Spinner size="sm" />
+                      ) : name?.length && !isNameCheckStale ? (
                         !orgMatches?.length ? (
-                          <ThemeIcon color="honeydew" variant="filled">
-                            <Icon.Check />
-                          </ThemeIcon>
+                          <Icon.Check />
                         ) : (
-                          <ThemeIcon color="cinnabar" variant="light">
-                            <Icon.X />
-                          </ThemeIcon>
+                          <Icon.X />
                         )
                       ) : null
                     }
@@ -304,7 +228,16 @@ const Home: NextPage = () => {
                         'Example email address of a farm used as a placeholder in the input for a farm email address'
                     })}
                     required
-                    {...getInputProps('email')}
+                    {...register('email', {
+                      validate: (v: string) =>
+                        validateEmail(v)
+                          ? undefined
+                          : intl.formatMessage({
+                              defaultMessage: 'Enter a valid email address',
+                              description:
+                                'Validation message that appears when a user types in an invalid email address'
+                            })
+                    })}
                   />
                   <TextInput
                     label={intl.formatMessage({
@@ -317,7 +250,16 @@ const Home: NextPage = () => {
                         'Example phone number of a farm used as a placeholder in the input for a farm phone number'
                     })}
                     required
-                    {...getInputProps('phone')}
+                    {...register('phone', {
+                      validate: (v: string | null) =>
+                        validatePhoneNumber(v)
+                          ? undefined
+                          : intl.formatMessage({
+                              defaultMessage: 'Enter a valid phone number',
+                              description:
+                                'Validation message that appears when a user types in an invalid phone number'
+                            })
+                    })}
                   />
                   <TextInput
                     label={intl.formatMessage({
@@ -330,7 +272,7 @@ const Home: NextPage = () => {
                         'Example address line of a farm used as a placeholder in the input for a farm address 1'
                     })}
                     required
-                    {...getInputProps('street1')}
+                    {...register('street1')}
                   />
                   <TextInput
                     label={intl.formatMessage({
@@ -342,11 +284,10 @@ const Home: NextPage = () => {
                       description:
                         'Example address line of a farm used as a placeholder in the input for a farm address 2'
                     })}
-                    {...getInputProps('street2')}
+                    {...register('street2')}
                   />
-                  <Group align="start" position="apart">
+                  <HStack justifyContent="space-between">
                     <TextInput
-                      className={classes.cityInput}
                       label={intl.formatMessage({
                         defaultMessage: 'City',
                         description: 'Label for a text input for the state of a farm address'
@@ -357,10 +298,9 @@ const Home: NextPage = () => {
                           'Example city of a farm used as a placeholder in the input for a farm address city'
                       })}
                       required
-                      {...getInputProps('city')}
+                      {...register('city')}
                     />
                     <TextInput
-                      className={classes.stateInput}
                       label={intl.formatMessage({
                         defaultMessage: 'State',
                         description: 'Label for a text input for the state of a farm address'
@@ -372,10 +312,9 @@ const Home: NextPage = () => {
                           'Example state of a farm used as a placeholder in the input for a farm address state'
                       })}
                       required
-                      {...getInputProps('state')}
+                      {...register('state')}
                     />
                     <TextInput
-                      className={classes.postCodeInput}
                       label={intl.formatMessage({
                         defaultMessage: 'Post Code',
                         description: 'Label for a text input for the post code of a farm address'
@@ -386,45 +325,45 @@ const Home: NextPage = () => {
                           'Example post code of a farm used as a placeholder in the input for a farm address post code'
                       })}
                       required
-                      {...getInputProps('postCode')}
+                      {...register('postCode')}
                     />
-                  </Group>
-                  <Radio.Group
-                    label={intl.formatMessage({
-                      defaultMessage: 'System of Units',
-                      description:
-                        'Label for radio button group selecting the unit system (imperial or metric) for the organization'
-                    })}
-                    {...getInputProps('unitSystem')}
-                  >
-                    <Radio
-                      label={intl.formatMessage({
-                        defaultMessage: 'Imperial',
-                        description: 'Radio button label for the imperial system of units'
+                  </HStack>
+                  <VStack alignItems="flex-start">
+                    <T.Label>
+                      {intl.formatMessage({
+                        defaultMessage: 'System of Units',
+                        description:
+                          'Label for radio button group selecting the unit system (imperial or metric) for the organization'
                       })}
-                      value={UnitSystem.Imperial}
-                    />
-                    <Radio
-                      label={intl.formatMessage({
-                        defaultMessage: 'Metric',
-                        description: 'Radio button label for the metric system of units'
-                      })}
-                      value={UnitSystem.Metric}
-                    />
-                  </Radio.Group>
-                </Stack>
-              </Paper>
-            </Stack>
-          </form>
-        </Center>
+                    </T.Label>
+                    <RadioGroup size="md" value={unitSystem}>
+                      <Radio value={UnitSystem.Imperial} {...register('unitSystem')}>
+                        {intl.formatMessage({
+                          defaultMessage: 'Imperial',
+                          description: 'Radio button label for the imperial system of units'
+                        })}
+                      </Radio>
+                      <Radio value={UnitSystem.Metric} {...register('unitSystem')}>
+                        {intl.formatMessage({
+                          defaultMessage: 'Metric',
+                          description: 'Radio button label for the metric system of units'
+                        })}
+                      </Radio>
+                    </RadioGroup>
+                  </VStack>
+                </VStack>
+              </Card>
+            </form>
+          </Box>
+        </VStack>
       ) : null}
       <FooterPortal>
-        <OnboardingFooter
+        <Footer
           active={active}
           goToStepOne={goToStepOne}
           goToStepTwo={goToStepTwo}
           isLoading={isLoading}
-          onSubmitForm={() => submitButtonRef.current?.click()}
+          onSubmitForm={handleSubmitWrapper(handleSubmitOrganization)}
         />
       </FooterPortal>
     </Box>

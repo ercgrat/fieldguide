@@ -3,13 +3,14 @@ import axios from 'axios';
 import { useMutation, useQuery } from 'react-query';
 import { APIRequestBody } from 'types/backend';
 import { QueryKey } from 'utils/enums';
-import { handleError } from 'utils/error';
+import { useErrorHandler } from 'utils/error';
 import urls from 'utils/urls';
 import { useCurrentOrganizationsQuery } from './organizations';
 
 export const useCropsQuery = () => {
   const { data: organizations } = useCurrentOrganizationsQuery();
   const organizationId = organizations?.[0]?.id;
+  const { handleError } = useErrorHandler();
   return useQuery<Crop[], Error>(
     [QueryKey.Organization, { organizationId }],
     async () => {
@@ -24,6 +25,7 @@ export const useCropsQuery = () => {
 };
 
 export const useCreateCropMutation = () => {
+  const { handleError } = useErrorHandler();
   return useMutation<Crop, Error, APIRequestBody.CreateCrop>(
     [QueryKey.Crop],
     crop => axios.post(urls.crops(), crop),

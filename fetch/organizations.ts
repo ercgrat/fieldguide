@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { useMutation, useQuery } from 'react-query';
 import { APIRequestBody } from 'types/backend';
 import { QueryKey } from 'utils/enums';
-import { handleError } from 'utils/error';
+import { useErrorHandler } from 'utils/error';
 import { useDebouncedQuery } from 'utils/timing';
 import urls from 'utils/urls';
 import { useCurrentUserQuery } from './users';
@@ -12,6 +12,7 @@ import { useCurrentUserQuery } from './users';
 export const useCurrentOrganizationsQuery = () => {
   const { data: user } = useCurrentUserQuery();
   const userId = user?.id ?? '';
+  const { handleError } = useErrorHandler();
 
   return useQuery<Organization[], Error>(
     [QueryKey.Organization, { userId }],
@@ -38,6 +39,7 @@ export const useOrganizationNameCheckQuery = (name: string) => {
       return data;
     };
   }, [name]);
+  const { handleError } = useErrorHandler();
   return useDebouncedQuery<Organization[], Error>(queryKey, queryFn, {
     enabled: !!name,
     onError: handleError
@@ -53,6 +55,7 @@ export const useCreateOrganizationMutation = (args?: {
       ) => void | Promise<unknown>)
     | undefined;
 }) => {
+  const { handleError } = useErrorHandler();
   return useMutation<Organization, Error, APIRequestBody.CreateOrganization>(
     [QueryKey.Organization],
     organization => axios.post(urls.organizations(), organization),

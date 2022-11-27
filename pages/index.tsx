@@ -1,5 +1,4 @@
 import { NextPage } from 'next';
-import { Center, Divider, Skeleton, Stack } from '@mantine/core';
 
 import React, { useEffect } from 'react';
 import AuthCard from 'components/Landing/AuthCard';
@@ -9,7 +8,7 @@ import LoginButton from 'components/Landing/LoginButton';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { Route } from 'utils/enums';
-import T from 'components/Base/T';
+import { Divider, Skeleton, Stack, T, VStack } from 'fgui';
 
 const Root: NextPage = () => {
   const router = useRouter();
@@ -22,39 +21,39 @@ const Root: NextPage = () => {
   }, [router, status]);
 
   return (
-    <Center>
+    <VStack>
       <Stack>
-        <Center>
+        <VStack>
           <Logo isHomeLinkEnabled={false} />
-        </Center>
+        </VStack>
         <AuthCard>
           {status === 'loading' ? (
             <Stack>
-              <Skeleton height={8} radius="xl" />
-              <Skeleton height={8} radius="xl" />
-              <Skeleton height={8} radius="xl" />
-              <Skeleton height={8} radius="xl" />
-              <Skeleton height={8} radius="xl" />
+              <Skeleton height={8} />
+              <Skeleton height={8} />
+              <Skeleton height={8} />
+              <Skeleton height={8} />
+              <Skeleton height={8} />
             </Stack>
           ) : (
             <Stack>
-              <Center>
-                <T.Title>
+              <VStack>
+                <T.H3>
                   <FormattedMessage
                     defaultMessage="Log In"
                     description="Label for a form to log into the app"
                   />
-                </T.Title>
-              </Center>
+                </T.H3>
+              </VStack>
               <Divider />
-              <Center>
+              <VStack>
                 <LoginButton />
-              </Center>
+              </VStack>
             </Stack>
           )}
         </AuthCard>
       </Stack>
-    </Center>
+    </VStack>
   );
 };
 
