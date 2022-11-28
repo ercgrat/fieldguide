@@ -11,7 +11,7 @@ import { Divider } from './Divider';
 import { Skeleton } from './Skeleton';
 import { Spinner } from './Spinner';
 import { Image } from './Image';
-import { AppShell, FooterPortal } from './AppShell';
+import { AppShell, MenuItem, FooterPortal } from './AppShell';
 import { Link } from './Link';
 import { Drawer } from './Drawer';
 
@@ -28,6 +28,7 @@ export {
   Icon,
   Image,
   Link,
+  MenuItem,
   Modal,
   NumberInput,
   Radio,

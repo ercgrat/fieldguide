@@ -26,7 +26,7 @@ const LoginButton: React.FC = () => {
 
   return (
     <Button onClick={logIn}>
-      <HStack>
+      <HStack gap={3}>
         <svg
           height="1em"
           version="1.1"
@@ -55,7 +55,7 @@ const LoginButton: React.FC = () => {
           </g>
         </svg>
         <FormattedMessage
-          defaultMessage="Log In with Google"
+          defaultMessage="Log in with Google"
           description="Text on a button to log in with Google"
         />
       </HStack>

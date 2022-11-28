@@ -36,7 +36,7 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
   );
 
   return (
-    <Modal isOpen onClose={onClose} trapFocus>
+    <Modal isOpen onClose={onClose}>
       <Modal.Header>
         {intl.formatMessage({
           defaultMessage: 'Add crop',

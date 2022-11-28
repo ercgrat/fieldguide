@@ -18,7 +18,7 @@ const RadioCard: React.FC<Props> = ({ children, label, value, selectedValue }) =
     <Card onClick={handleClick} p={6} shadow="sm">
       <Stack>
         <HStack justifyContent="space-between">
-          <T.H2>{label}</T.H2>
+          <T.HeadingMd>{label}</T.HeadingMd>
           <Radio isChecked={selectedValue === value} ref={radioRef} size="md" value={value} />
         </HStack>
         <Stack justify="space-between">{children}</Stack>

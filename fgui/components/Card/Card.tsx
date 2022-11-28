@@ -1,9 +1,42 @@
-import { Card as ChakraCard, forwardRef, useStyleConfig } from '@chakra-ui/react';
+import {
+  Card as ChakraCard,
+  CardBody,
+  CardFooter,
+  CardHeader,
+  CardProps,
+  forwardRef,
+  useStyleConfig
+} from '@chakra-ui/react';
+import { Divider, T } from 'fgui';
 
-const Card = forwardRef((props, ref) => {
+const CardBase = forwardRef(({ children, header, footer, ...props }, ref) => {
   const styles = useStyleConfig('Card');
+  return (
+    <ChakraCard __css={styles} {...props} ref={ref}>
+      {children}
+    </ChakraCard>
+  );
+});
 
-  return <ChakraCard __css={styles} {...props} ref={ref} />;
+const Card = Object.assign(CardBase, {
+  Header: forwardRef(({ children, ...props }, ref) => (
+    <>
+      <CardHeader px={4} py={2} {...props} ref={ref}>
+        <T.HeadingMd>{children}</T.HeadingMd>
+      </CardHeader>
+      <Divider />
+    </>
+  )),
+  Body: forwardRef((props, ref) => {
+    const styles = useStyleConfig('Card.Body');
+    return <CardBody __css={styles} px={4} py={2} {...props} ref={ref} />;
+  }),
+  Footer: forwardRef((props, ref) => (
+    <>
+      <Divider />
+      <CardFooter p={2} {...props} ref={ref} />
+    </>
+  ))
 });
 
 export default Card;

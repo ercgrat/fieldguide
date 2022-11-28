@@ -126,12 +126,12 @@ const Home: NextPage = () => {
     <Box m={6}>
       {active === OnboardingStep.One ? (
         <VStack alignItems="flex-start">
-          <T.H2>
+          <T.HeadingLg>
             <FormattedMessage
               defaultMessage="Are you a farm owner or a farm worker?"
               description="Title of the first onboarding question"
             />
-          </T.H2>
+          </T.HeadingLg>
           <RadioGroup onChange={handleChangeRole} pt={4} size="lg" value={role}>
             <Flex flexDirection={['column', 'column', 'row']} gap={2}>
               <RadioCard
@@ -142,12 +142,12 @@ const Home: NextPage = () => {
                 selectedValue={role}
                 value={Role.Owner}
               >
-                <T.Body2>
+                <T.BodyMd>
                   <FormattedMessage
                     defaultMessage="Select this option if you are the owner of a farm business or have never used FieldGuide before."
                     description="Instructions for the 'Create your own farm' option when onboarding a new organization."
                   />
-                </T.Body2>
+                </T.BodyMd>
                 <Image fit="cover" height={360} my={6} src="owner.jpg" />
               </RadioCard>
               <RadioCard
@@ -158,12 +158,12 @@ const Home: NextPage = () => {
                 selectedValue={role}
                 value={Role.Member}
               >
-                <T.Body2>
+                <T.BodyMd>
                   <FormattedMessage
                     defaultMessage="Select this option if you are a farm employee and your manager already has a farm set up on FieldGuide."
                     description="Instructions for the 'Join an existing farm' option when onboarding a new organization."
                   />
-                </T.Body2>
+                </T.BodyMd>
                 <Image fit="cover" height={360} my={6} src="workers.jpg" />
               </RadioCard>
             </Flex>
@@ -172,12 +172,12 @@ const Home: NextPage = () => {
       ) : null}
       {active === OnboardingStep.Two ? (
         <VStack alignItems="flex-start" w="100%">
-          <T.H2>
+          <T.HeadingLg>
             <FormattedMessage
               defaultMessage="Tell us about your farm"
               description="Message above a form allowing the user to enter details about a farm when creating one as part of onboarding"
             />
-          </T.H2>
+          </T.HeadingLg>
           <Box alignSelf="center">
             <form onSubmit={handleSubmitWrapper(handleSubmitOrganization)}>
               <Box as="button" display="none" ref={submitButtonRef} type="submit" />

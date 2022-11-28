@@ -1,43 +1,58 @@
 export default {
-  h1: {
-    fontSize: ['30px', '30px', '48px'],
+  heading4xl: {
+    fontSize: ['28px', '28px', '40px'],
     fontWeight: 'bold',
     lineHeight: '110%'
   },
-  h2: {
+  heading3xl: {
     fontSize: ['24px', '24px', '32px'],
     fontWeight: 'semibold',
     lineHeight: '120%'
   },
-  h3: {
-    fontSize: ['16px', '16px', '24px'],
+  heading2xl: {
+    fontSize: ['20px', '20px', '28px'],
     fontWeight: 'semibold',
     lineHeight: '120%'
   },
-  body1: {
+  headingXl: {
+    fontSize: ['16px', '16px', '24px'],
+    fontWeight: 'bold',
+    lineHeight: '120%'
+  },
+  headingLg: {
     fontSize: ['14px', '14px', '20px'],
     fontWeight: 'normal',
     lineHeight: '150%'
   },
-  body2: {
+  headingMd: {
+    fontSize: ['12px', '12px', '16px'],
+    fontWeight: 'semibold',
+    lineHeight: '150%'
+  },
+  headingSm: {
+    fontSize: ['10px', '10px', '14px'],
+    fontWeight: 'semibold',
+    lineHeight: '150%'
+  },
+  bodyLg: {
+    fontSize: ['14px', '14px', '20px'],
+    fontWeight: 'normal',
+    lineHeight: '150%'
+  },
+  bodyMd: {
     fontSize: ['12px', '12px', '16px'],
     fontWeight: 'normal',
     lineHeight: '150%'
   },
-  body3: {
+  bodySm: {
     fontSize: ['10px', '10px', '14px'],
     fontWeight: 'normal',
     lineHeight: '150%'
   },
   label: {
-    fontSize: ['9px', '9px', '12px'],
+    fontSize: ['8px', '8px', '12px'],
     fontWeight: 'normal',
     textTransform: 'uppercase',
     lineHeight: '120%'
-  },
-  caption: {
-    fontSize: ['8px', '8px', '10px'],
-    fontWeight: 'normal',
-    lineHeight: '150%'
   }
 };

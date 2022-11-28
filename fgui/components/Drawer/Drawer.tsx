@@ -7,7 +7,7 @@ import {
   DrawerFooter,
   DrawerBody
 } from '@chakra-ui/react';
-import { Button, Divider, HStack, Icon, T, VStack } from 'fgui';
+import { Button, Divider, Flex, HStack, Icon, T } from 'fgui';
 
 type Props = DrawerProps & {
   header?: React.ReactNode;
@@ -17,19 +17,19 @@ const Drawer: React.FC<Props> = ({ children, header, footer, onClose, ...props }
   <ChakraDrawer onClose={onClose} {...props}>
     <DrawerOverlay />
     <DrawerContent>
-      <VStack alignItems="flex-start">
-        <DrawerHeader>
+      <Flex alignItems="flex-start" direction="column">
+        <DrawerHeader p={2}>
           <HStack justifyContent="space-between" px={1} w="100%">
-            <T.H3>{header}</T.H3>
+            <T.HeadingLg>{header}</T.HeadingLg>
             <Button onClick={onClose}>
               <Icon.X />
             </Button>
           </HStack>
-          <Divider mt={2} />
         </DrawerHeader>
+        <Divider />
         <DrawerBody>{children}</DrawerBody>
         <DrawerFooter>{footer}</DrawerFooter>
-      </VStack>
+      </Flex>
     </DrawerContent>
   </ChakraDrawer>
 );

@@ -21,11 +21,11 @@ const variants: Record<ButtonVariant, SystemStyleInterpolation> = {
   },
   secondary: {
     color: 'bark.90',
-    background: 'bark.15',
+    background: 'bark.5',
     border: 'solid 1px',
-    borderColor: 'bark.30',
+    borderColor: 'bark.25',
     _active: {
-      background: 'bark.20'
+      background: 'bark.15'
     },
     _hover: {
       background: 'bark.10',
@@ -67,6 +67,7 @@ const variants: Record<ButtonVariant, SystemStyleInterpolation> = {
 export default defineStyleConfig({
   baseStyle: {
     borderRadius: '4px',
+    boxShadow: '0 0.0625rem 0 rgba(0, 0, 0, 0.05)',
     _focus: {
       outline: 'solid 1px cornflower.100'
     }

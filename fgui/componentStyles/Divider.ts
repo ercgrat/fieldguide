@@ -1,5 +1,5 @@
 import { defineStyleConfig } from '@chakra-ui/react';
 
 export default defineStyleConfig({
-  baseStyle: { borderColor: 'bark.30' }
+  baseStyle: { opacity: 1, borderColor: 'bark.25' }
 });

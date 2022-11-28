@@ -6,46 +6,72 @@ const Text = forwardRef(({ children, ...props }, ref) => (
   </ChakraText>
 ));
 
-type TextType = 'H1' | 'H2' | 'H3' | 'Body1' | 'Body2' | 'Body3' | 'Label' | 'Caption';
+type TextType =
+  | 'Heading4xl'
+  | 'Heading3xl'
+  | 'Heading2xl'
+  | 'HeadingXl'
+  | 'HeadingLg'
+  | 'HeadingMd'
+  | 'HeadingSm'
+  | 'BodyLg'
+  | 'BodyMd'
+  | 'BodySm'
+  | 'Label';
 
 export const T: { [key in TextType]: React.FC<TextProps> } = {
-  H1: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
-    <Text {...props} ref={ref} textStyle="h1">
+  Heading4xl: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
+    <Text {...props} ref={ref} textStyle="heading4xl">
       {children}
     </Text>
   )),
-  H2: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
-    <Text {...props} ref={ref} textStyle="h2">
+  Heading3xl: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
+    <Text {...props} ref={ref} textStyle="heading3xl">
       {children}
     </Text>
   )),
-  H3: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
-    <Text {...props} ref={ref} textStyle="h3">
+  Heading2xl: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
+    <Text {...props} ref={ref} textStyle="heading2xl">
       {children}
     </Text>
   )),
-  Body1: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
-    <Text {...props} ref={ref} textStyle="body1">
+  HeadingXl: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
+    <Text {...props} ref={ref} textStyle="headingXl">
       {children}
     </Text>
   )),
-  Body2: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
-    <Text {...props} ref={ref} textStyle="body2">
+  HeadingLg: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
+    <Text {...props} ref={ref} textStyle="headingLg">
       {children}
     </Text>
   )),
-  Body3: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
-    <Text {...props} ref={ref} textStyle="body3">
+  HeadingMd: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
+    <Text {...props} ref={ref} textStyle="headingMd">
+      {children}
+    </Text>
+  )),
+  HeadingSm: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
+    <Text {...props} ref={ref} textStyle="headingSm">
+      {children}
+    </Text>
+  )),
+  BodyLg: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
+    <Text {...props} ref={ref} textStyle="bodyLg">
+      {children}
+    </Text>
+  )),
+  BodyMd: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
+    <Text {...props} ref={ref} textStyle="bodyMd">
+      {children}
+    </Text>
+  )),
+  BodySm: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
+    <Text {...props} ref={ref} textStyle="bodySm">
       {children}
     </Text>
   )),
   Label: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
     <Text {...props} color="bark.70" ref={ref} textStyle="label">
-      {children}
-    </Text>
-  )),
-  Caption: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
-    <Text {...props} ref={ref} textStyle="caption">
       {children}
     </Text>
   ))

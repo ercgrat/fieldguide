@@ -51,7 +51,7 @@ const ModalHeader: React.FC<ChakraModalHeaderProps> = forwardRef<ChakraModalHead
     return (
       <ChakraModalHeader {...props} ref={ref}>
         <HStack justifyContent="space-between" p={4} w="100%">
-          {typeof children === 'string' ? <T.H3>{children}</T.H3> : children}
+          {typeof children === 'string' ? <T.HeadingLg>{children}</T.HeadingLg> : children}
           <Button onClick={onClose}>
             <Icon.X color="neutral.70" />
           </Button>
