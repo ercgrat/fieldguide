@@ -17,7 +17,7 @@ type NumberInputFieldProps = Omit<ChakraNumberInputFieldProps, 'onChange' | 'min
   max?: number;
 };
 const NumberInputField = forwardRef<NumberInputFieldProps, 'input'>(
-  ({ min, max, onChange, ...props }, ref) => {
+  ({ min = 0, max = 999999, onChange, ...props }, ref) => {
     if (!isNil(min) && !isNil(max) && min > max) {
       throwDeveloperError('Min must be less than or equal to max.');
     }
