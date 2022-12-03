@@ -79,7 +79,7 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
                 })}
                 {...daysToMaturityProps}
                 max={undefined}
-                min={-3}
+                min={0}
                 onChange={v => setValue('daysToMaturity', v ?? null)}
               />
               <NumberInput
