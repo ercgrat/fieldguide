@@ -10,11 +10,11 @@ import urls from 'utils/urls';
 import { useCurrentUserQuery } from './users';
 
 export const useCurrentOrganizationsQuery = () => {
-  const { data: user } = useCurrentUserQuery();
+  const { data: user, isFetching } = useCurrentUserQuery();
   const userId = user?.id ?? '';
   const { handleError } = useErrorHandler();
 
-  return useQuery<Organization[], Error>(
+  const queryResult = useQuery<Organization[], Error>(
     [QueryKey.Organization, { userId }],
     async () => {
       const { data } = await axios.get<Organization[]>(urls.organizations({ userId }));
@@ -25,6 +25,11 @@ export const useCurrentOrganizationsQuery = () => {
       onError: handleError
     }
   );
+
+  return {
+    ...queryResult,
+    isFetching: isFetching || queryResult.isFetching
+  };
 };
 
 export type OrganizationNameCheckQueryKey = {

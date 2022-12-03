@@ -56,8 +56,8 @@ const Home: NextPage = () => {
   }, []);
 
   useEffect(() => {
-    if (hasLoadedOrganizations && !!organizations?.length && router.pathname !== Route.Home) {
-      router.push(Route.Home);
+    if (hasLoadedOrganizations && !!organizations?.length && router.pathname !== Route.Crops) {
+      router.push(Route.Crops);
     }
   }, [hasLoadedOrganizations, organizations?.length, router]);
 

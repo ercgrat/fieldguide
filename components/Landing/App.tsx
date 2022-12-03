@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { useBreakpointValue } from '@chakra-ui/react';
 import { Route } from 'utils/enums';
 import { useRouter } from 'next/router';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 type Props = {
   children: React.ReactNode;
@@ -13,6 +13,7 @@ type Props = {
 const App: React.FC<Props> = ({ children }) => {
   const router = useRouter();
   const { isOpen, onToggle } = useDisclosure();
+  const { status } = useSession();
   const handleLogOut = useCallback(() => {
     signOut();
   }, []);
@@ -45,12 +46,14 @@ const App: React.FC<Props> = ({ children }) => {
           <T.HeadingXl>
             <FormattedMessage defaultMessage="Field Guide" description="Title of the application" />
           </T.HeadingXl>
-          <Button display={display} onClick={handleLogOut} variant="danger">
-            <FormattedMessage
-              defaultMessage="Log out"
-              description="Button to log the user out of the application"
-            />
-          </Button>
+          {status === 'authenticated' && (
+            <Button display={display} onClick={handleLogOut} variant="danger">
+              <FormattedMessage
+                defaultMessage="Log out"
+                description="Button to log the user out of the application"
+              />
+            </Button>
+          )}
         </HStack>
       }
       isOpen={isOpen}
