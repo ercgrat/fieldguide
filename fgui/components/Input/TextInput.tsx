@@ -1,19 +1,21 @@
 import { forwardRef, Input, InputGroup, InputProps, InputRightAddon } from '@chakra-ui/react';
-import { Flex, T } from 'fgui';
+import { Flex } from 'fgui';
+import InputLabel from './InputLabel';
 import { fieldStyles } from './styles';
 
-type Props = InputProps & {
+type Props = Omit<InputProps, 'required'> & {
   label?: string;
   rightAddon?: React.ReactNode;
 };
-const TextInput = forwardRef<Props, 'input'>(({ label, rightAddon, ...props }, ref) => {
+const TextInput = forwardRef<Props, 'input'>(({ label, rightAddon, isRequired, ...props }, ref) => {
   return (
     <Flex direction="column" w="100%">
-      {label && <T.Label mb={1}>{label}</T.Label>}
+      <InputLabel isRequired={isRequired} label={label} />
       <InputGroup>
         <Input
           {...fieldStyles}
           borderRight={rightAddon ? 'none' : undefined}
+          isRequired={isRequired}
           ref={ref}
           {...props}
         />

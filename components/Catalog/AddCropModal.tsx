@@ -57,7 +57,7 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
           <VStack alignItems="flex-start" w="100%">
             <TextInput
               data-autofocus
-              required
+              isRequired
               {...register('name', { required: true })}
               label={intl.formatMessage({
                 defaultMessage: 'Name',

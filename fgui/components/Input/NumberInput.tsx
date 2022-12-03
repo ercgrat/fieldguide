@@ -5,10 +5,11 @@ import {
   NumberInputProps as ChakraNumberInputProps
 } from '@chakra-ui/react';
 import { fieldStyles } from './styles';
-import { Flex, T } from 'fgui';
+import { Flex } from 'fgui';
 import isNil from 'lodash/isNil';
 import { throwDeveloperError } from 'utils/error';
 import { ChangeEvent, useCallback } from 'react';
+import InputLabel from './InputLabel';
 
 type Props = Omit<ChakraNumberInputProps, 'onChange' | 'min' | 'max'> & {
   label?: string;
@@ -17,7 +18,7 @@ type Props = Omit<ChakraNumberInputProps, 'onChange' | 'min' | 'max'> & {
   max?: number;
 };
 const NumberInput = forwardRef<Props, 'div'>(
-  ({ label, min = 0, max = 999999, precision = 0, onChange, ...props }, ref) => {
+  ({ label, min = 0, max = 999999, precision = 0, onChange, isRequired, ...props }, ref) => {
     if (!isNil(min) && !isNil(max) && min > max) {
       throwDeveloperError('Min must be less than or equal to max.');
     }
@@ -60,8 +61,15 @@ const NumberInput = forwardRef<Props, 'div'>(
 
     return (
       <Flex direction="column" w="100%">
-        {label && <T.Label mb={1}>{label}</T.Label>}
-        <ChakraNumberInput ref={ref} {...props} max={max} min={min} precision={precision}>
+        <InputLabel isRequired={isRequired} label={label} />
+        <ChakraNumberInput
+          ref={ref}
+          {...props}
+          isRequired={isRequired}
+          max={max}
+          min={min}
+          precision={precision}
+        >
           <ChakraNumberInputField max={max} min={min} onChange={handleChange} {...fieldStyles} />
         </ChakraNumberInput>
       </Flex>
