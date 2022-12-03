@@ -6,7 +6,7 @@ import React, { useCallback, useRef } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const CropsPage: NextPage = () => {
-  const { data: crops, isLoading } = useCropsQuery();
+  const { data: crops, isLoading, refetch } = useCropsQuery();
   const {
     isOpen: isAddCropModalOpen,
     onOpen: openAddCropModal,
@@ -17,10 +17,11 @@ const CropsPage: NextPage = () => {
   const addCropButtonRef = useRef<HTMLButtonElement>(null);
   const handleCloseAddCropModal = useCallback(() => {
     closeAddCropModal();
+    refetch();
     setTimeout(() => {
       addCropButtonRef.current?.focus();
     });
-  }, [closeAddCropModal]);
+  }, [closeAddCropModal, refetch]);
   return (
     <Box p={2}>
       <Button mb={10} onClick={openAddCropModal} ref={addCropButtonRef} variant="primary">

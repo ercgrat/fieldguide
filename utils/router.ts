@@ -7,7 +7,7 @@ import { Route } from './enums';
 export const useRedirects = () => {
   const { status } = useSession();
   const router = useRouter();
-  const { data: organizations } = useCurrentOrganizationsQuery();
+  const { data: organizations, isFetched } = useCurrentOrganizationsQuery();
 
   useEffect(() => {
     if (status === 'unauthenticated' && router.pathname !== Route.Login) {
@@ -18,10 +18,11 @@ export const useRedirects = () => {
   useEffect(() => {
     if (
       status === 'authenticated' &&
+      isFetched &&
       !organizations?.length &&
       router.pathname !== Route.Onboarding
     ) {
       router.push(Route.Onboarding);
     }
-  }, [organizations?.length, router, status]);
+  }, [isFetched, organizations?.length, router, status]);
 };

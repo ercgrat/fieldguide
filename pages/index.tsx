@@ -14,7 +14,7 @@ const Root: NextPage = () => {
 
   useEffect(() => {
     if (status === 'authenticated') {
-      router.push(Route.Home);
+      router.push(Route.Crops);
     }
   }, [router, status]);
 

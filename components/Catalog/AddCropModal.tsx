@@ -22,7 +22,7 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
       name: ''
     }
   });
-  const { mutate, isLoading } = useCreateCropMutation();
+  const { mutate, isLoading } = useCreateCropMutation({ onSuccess: onClose });
   const handleSubmit = useCallback(
     (values: APIRequestBody.CreateCrop) => {
       mutate({

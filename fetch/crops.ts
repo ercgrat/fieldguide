@@ -24,13 +24,14 @@ export const useCropsQuery = () => {
   );
 };
 
-export const useCreateCropMutation = () => {
+export const useCreateCropMutation = (args?: { onSuccess?: (data: Crop) => void }) => {
   const { handleError } = useErrorHandler();
   return useMutation<Crop, Error, APIRequestBody.CreateCrop>(
     [QueryKey.Crop],
     crop => axios.post(urls.crops(), crop),
     {
-      onError: handleError
+      onError: handleError,
+      onSuccess: args?.onSuccess
     }
   );
 };
