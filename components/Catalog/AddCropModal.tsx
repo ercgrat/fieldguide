@@ -77,30 +77,22 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
                   description:
                     'Label for the number input for days to maturity when creating a crop'
                 })}
-                precision={0}
-              >
-                <NumberInput.Field
-                  {...daysToMaturityProps}
-                  max={undefined}
-                  min={-3}
-                  onChange={v => setValue('daysToMaturity', v ?? null)}
-                />
-              </NumberInput>
+                {...daysToMaturityProps}
+                max={undefined}
+                min={-3}
+                onChange={v => setValue('daysToMaturity', v ?? null)}
+              />
               <NumberInput
                 isRequired
                 label={intl.formatMessage({
                   defaultMessage: 'Harvest window (days)',
                   description: 'Label for the number input for harvest window when creating a crop'
                 })}
-                precision={0}
-              >
-                <NumberInput.Field
-                  {...harvestWindowProps}
-                  max={undefined}
-                  min={1}
-                  onChange={v => setValue('harvestWindow', v ?? null)}
-                />
-              </NumberInput>
+                {...harvestWindowProps}
+                max={undefined}
+                min={1}
+                onChange={v => setValue('harvestWindow', v ?? null)}
+              />
             </HStack>
           </VStack>
         </form>

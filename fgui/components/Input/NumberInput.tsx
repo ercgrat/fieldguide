@@ -2,8 +2,7 @@ import {
   forwardRef,
   NumberInput as ChakraNumberInput,
   NumberInputField as ChakraNumberInputField,
-  NumberInputFieldProps as ChakraNumberInputFieldProps,
-  NumberInputProps
+  NumberInputProps as ChakraNumberInputProps
 } from '@chakra-ui/react';
 import { fieldStyles } from './styles';
 import { Flex, T } from 'fgui';
@@ -11,13 +10,14 @@ import isNil from 'lodash/isNil';
 import { throwDeveloperError } from 'utils/error';
 import { ChangeEvent, useCallback } from 'react';
 
-type NumberInputFieldProps = Omit<ChakraNumberInputFieldProps, 'onChange' | 'min' | 'max'> & {
+type Props = Omit<ChakraNumberInputProps, 'onChange' | 'min' | 'max'> & {
+  label?: string;
   onChange?: (value: number | undefined) => void;
   min?: number;
   max?: number;
 };
-const NumberInputField = forwardRef<NumberInputFieldProps, 'input'>(
-  ({ min = 0, max = 999999, onChange, ...props }, ref) => {
+const NumberInput = forwardRef<Props, 'div'>(
+  ({ label, min = 0, max = 999999, precision = 0, onChange, ...props }, ref) => {
     if (!isNil(min) && !isNil(max) && min > max) {
       throwDeveloperError('Min must be less than or equal to max.');
     }
@@ -59,32 +59,14 @@ const NumberInputField = forwardRef<NumberInputFieldProps, 'input'>(
     );
 
     return (
-      <ChakraNumberInputField
-        max={max}
-        min={min}
-        ref={ref}
-        {...fieldStyles}
-        {...props}
-        onChange={handleChange}
-      />
+      <Flex direction="column" w="100%">
+        {label && <T.Label mb={1}>{label}</T.Label>}
+        <ChakraNumberInput ref={ref} {...props} max={max} min={min} precision={precision}>
+          <ChakraNumberInputField max={max} min={min} onChange={handleChange} {...fieldStyles} />
+        </ChakraNumberInput>
+      </Flex>
     );
   }
 );
-
-type Props = NumberInputProps & {
-  label?: string;
-};
-const NumberInputBase = forwardRef<Props, 'div'>(({ label, ...props }, ref) => {
-  return (
-    <Flex direction="column" w="100%">
-      {label && <T.Label mb={1}>{label}</T.Label>}
-      <ChakraNumberInput ref={ref} {...props} />
-    </Flex>
-  );
-});
-
-const NumberInput = Object.assign(NumberInputBase, {
-  Field: NumberInputField
-});
 
 export default NumberInput;
