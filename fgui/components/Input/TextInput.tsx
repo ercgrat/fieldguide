@@ -1,5 +1,6 @@
 import { forwardRef, Input, InputGroup, InputProps, InputRightAddon } from '@chakra-ui/react';
 import { Flex, T } from 'fgui';
+import { fieldStyles } from './styles';
 
 type Props = InputProps & {
   label?: string;
@@ -11,15 +12,8 @@ const TextInput = forwardRef<Props, 'input'>(({ label, rightAddon, ...props }, r
       {label && <T.Label mb={1}>{label}</T.Label>}
       <InputGroup>
         <Input
-          _focus={{ borderColor: 'cornflower.100', boxShadow: 'none' }}
-          _hover={{ borderColor: 'cornflower.50' }}
-          _placeholder={{ color: 'bark.40', fontSize: 'sm' }}
-          borderColor="bark.25"
-          borderRadius="3px"
+          {...fieldStyles}
           borderRight={rightAddon ? 'none' : undefined}
-          height="36px"
-          outline="none"
-          px={2.5}
           ref={ref}
           {...props}
         />

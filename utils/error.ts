@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import { useToast } from 'fgui';
 import { useCallback } from 'react';
+import { IS_PROD } from './const';
 import { HttpResponseHeader } from './enums';
 
 export const useErrorHandler = () => {
@@ -20,4 +21,10 @@ export const useErrorHandler = () => {
   );
 
   return { handleError };
+};
+
+export const throwDeveloperError = (message: string) => {
+  if (!IS_PROD) {
+    throw new Error(message);
+  }
 };

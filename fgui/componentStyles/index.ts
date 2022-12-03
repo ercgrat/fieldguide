@@ -6,6 +6,7 @@ import Drawer from './Drawer';
 import Input from './Input';
 import Link from './Link';
 import Modal from './Modal';
+import NumberInput from './NumberInput';
 import Radio from './Radio';
 import Text from './Text';
 
@@ -18,6 +19,7 @@ export default {
   Input,
   Link,
   Modal,
+  NumberInput,
   Radio,
   Text
 };

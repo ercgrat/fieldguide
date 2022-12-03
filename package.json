@@ -24,6 +24,7 @@
     "http-status-codes": "^2.2.0",
     "joi": "^17.6.0",
     "libphonenumber-js": "^1.10.13",
+    "lodash": "^4.17.21",
     "next": "^12.1.5",
     "next-auth": "^4.10.3",
     "prisma": "^4.3.1",

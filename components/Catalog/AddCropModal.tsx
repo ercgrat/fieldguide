@@ -4,7 +4,7 @@ import { useCurrentOrganizationsQuery } from 'fetch/organizations';
 import React, { useCallback } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { APIRequestBody } from 'types/backend';
-import { Box, Button, HStack, Modal, TextInput, VStack } from 'fgui';
+import { Box, Button, HStack, Modal, NumberInput, TextInput, VStack } from 'fgui';
 
 type Props = {
   onClose: () => void;
@@ -16,12 +16,20 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
   const {
     register,
     handleSubmit: handleSubmitWrapper,
-    formState: { errors }
+    formState: { errors },
+    setValue
   } = useForm<APIRequestBody.CreateCrop>({
     defaultValues: {
       name: ''
     }
   });
+  const { onChange: _daysToMaturityOnChange, ...daysToMaturityProps } = register('daysToMaturity', {
+    required: true
+  });
+  const { onChange: _harvestWindowOnChange, ...harvestWindowProps } = register('harvestWindow', {
+    required: true
+  });
+
   const { mutate, isLoading } = useCreateCropMutation({ onSuccess: onClose });
   const handleSubmit = useCallback(
     (values: APIRequestBody.CreateCrop) => {
@@ -61,22 +69,39 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
                   'Example crop shown as a placeholder for the name field when creating a crop'
               })}
             />
-            <TextInput
-              required
-              {...register('daysToMaturity', { required: true })}
-              label={intl.formatMessage({
-                defaultMessage: 'Days to maturity',
-                description: 'Label for the number input for days to maturity when creating a crop'
-              })}
-            />
-            <TextInput
-              required
-              {...register('harvestWindow', { required: true })}
-              label={intl.formatMessage({
-                defaultMessage: 'Harvest window',
-                description: 'Label for the number input for harvest window when creating a crop'
-              })}
-            />
+            <HStack>
+              <NumberInput
+                isRequired
+                label={intl.formatMessage({
+                  defaultMessage: 'Days to maturity',
+                  description:
+                    'Label for the number input for days to maturity when creating a crop'
+                })}
+                precision={0}
+              >
+                <NumberInput.Field
+                  {...daysToMaturityProps}
+                  max={undefined}
+                  min={-3}
+                  onChange={v => setValue('daysToMaturity', v ?? null)}
+                />
+              </NumberInput>
+              <NumberInput
+                isRequired
+                label={intl.formatMessage({
+                  defaultMessage: 'Harvest window (days)',
+                  description: 'Label for the number input for harvest window when creating a crop'
+                })}
+                precision={0}
+              >
+                <NumberInput.Field
+                  {...harvestWindowProps}
+                  max={undefined}
+                  min={1}
+                  onChange={v => setValue('harvestWindow', v ?? null)}
+                />
+              </NumberInput>
+            </HStack>
           </VStack>
         </form>
       </Modal.Body>

@@ -42,7 +42,7 @@
           "^[^A-Z]" /* Handles most false positives from legitimate, non-user-facing JSX attribute values */,
           "Relay"
         ],
-        "ignoreCallee": ["intl.formatMessage", "useStyleConfig"],
+        "ignoreCallee": ["intl.formatMessage", "useStyleConfig", "throwDeveloperError"],
         "ignoreComponent": ["FormattedMessage"]
       }
     ],
