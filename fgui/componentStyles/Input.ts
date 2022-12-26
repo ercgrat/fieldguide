@@ -9,6 +9,10 @@ const baseStyle = definePartsStyle({
     background: 'bark.5',
     fontSize: 'md',
     color: 'bark.90'
+  },
+  addon: {
+    color: 'bark.90',
+    backgroundColor: 'bark.10'
   }
 });
 

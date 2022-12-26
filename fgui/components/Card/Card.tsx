@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { Divider, T } from 'fgui';
 
-const CardBase = forwardRef(({ children, header, footer, ...props }, ref) => {
+const CardBase = forwardRef<CardProps, 'div'>(({ children, ...props }, ref) => {
   const styles = useStyleConfig('Card');
   return (
     <ChakraCard __css={styles} {...props} ref={ref}>
@@ -39,4 +39,4 @@ const Card = Object.assign(CardBase, {
   ))
 });
 
-export default Card;
+export default Card as typeof CardBase;

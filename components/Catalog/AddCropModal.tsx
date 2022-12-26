@@ -18,11 +18,7 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
     handleSubmit: handleSubmitWrapper,
     formState: { errors },
     setValue
-  } = useForm<APIRequestBody.CreateCrop>({
-    defaultValues: {
-      name: ''
-    }
-  });
+  } = useForm<APIRequestBody.CreateCrop>();
   const { onChange: _daysToMaturityOnChange, ...daysToMaturityProps } = register('daysToMaturity', {
     required: true
   });

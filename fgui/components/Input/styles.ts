@@ -1,8 +1,8 @@
 const fieldStyles = {
-  _focus: { borderColor: 'cornflower.100', boxShadow: 'none' },
-  _hover: { borderColor: 'cornflower.50' },
+  _focus: { border: 'solid 1px', boxShadow: 'none' },
+  _hover: { border: 'solid 1px' },
   _placeholder: { color: 'bark.40', fontSize: 'sm' },
-  borderColor: 'bark.25',
+  border: 'solid 1px',
   borderRadius: '3px',
   height: '36px',
   outline: 'none',
