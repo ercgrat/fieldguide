@@ -17,14 +17,15 @@ const IconBase = forwardRef<IconProps, 'svg'>((props, ref) => (
   />
 ));
 
-const SiloIconDictionary: { [key in FieldGuideIconKey]: typeof IconBase } = Object.fromEntries(
-  Object.keys(FieldGuideIconKey).map(k => [
-    k,
-    forwardRef<IconProps, 'svg'>(({ as, ...props }, ref) => (
-      <IconBase as={(FieldGuideIcons as any)[k]} key={k} ref={ref} {...props} />
-    ))
-  ])
-) as { [key in FieldGuideIconKey]: typeof IconBase };
+const FieldGuideIconDictionary: { [key in FieldGuideIconKey]: typeof IconBase } =
+  Object.fromEntries(
+    Object.keys(FieldGuideIconKey).map(k => [
+      k,
+      forwardRef<IconProps, 'svg'>(({ as, ...props }, ref) => (
+        <IconBase as={(FieldGuideIcons as any)[k]} key={k} ref={ref} {...props} />
+      ))
+    ])
+  ) as { [key in FieldGuideIconKey]: typeof IconBase };
 
 const FeatherIconDictionary: {
   [key in keyof typeof FeatherIcons]: typeof IconBase;
@@ -37,7 +38,7 @@ const FeatherIconDictionary: {
   ])
 ) as { [key in keyof typeof FeatherIcons]: typeof IconBase };
 
-const Icon: typeof IconBase & typeof FeatherIconDictionary & typeof SiloIconDictionary =
-  Object.assign(Object.assign(IconBase, FeatherIconDictionary), SiloIconDictionary);
+const Icon: typeof IconBase & typeof FeatherIconDictionary & typeof FieldGuideIconDictionary =
+  Object.assign(Object.assign(IconBase, FeatherIconDictionary), FieldGuideIconDictionary);
 
 export { Icon };

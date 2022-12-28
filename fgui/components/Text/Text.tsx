@@ -1,7 +1,7 @@
-import { forwardRef, Text as ChakraText, TextProps } from '@chakra-ui/react';
+import { ComponentWithAs, forwardRef, Text as ChakraText, TextProps } from '@chakra-ui/react';
 
 const Text = forwardRef(({ children, ...props }, ref) => (
-  <ChakraText {...props} ref={ref}>
+  <ChakraText as="div" {...props} ref={ref}>
     {children}
   </ChakraText>
 ));
@@ -19,7 +19,7 @@ type TextType =
   | 'BodySm'
   | 'Label';
 
-export const T: { [key in TextType]: React.FC<TextProps> } = {
+export const T: { [key in TextType]: ComponentWithAs<'div', TextProps> } = {
   Heading4xl: forwardRef<TextProps, 'div'>(({ children, ...props }, ref) => (
     <Text {...props} ref={ref} textStyle="heading4xl">
       {children}

@@ -14,6 +14,7 @@ import { Image } from './Image';
 import { AppShell, MenuItem, FooterPortal } from './AppShell';
 import { Link } from './Link';
 import { Drawer } from './Drawer';
+import { Table } from './Table';
 
 export {
   AppShell,
@@ -37,6 +38,7 @@ export {
   Skeleton,
   Stack,
   T,
+  Table,
   Text,
   TextInput,
   Toast,

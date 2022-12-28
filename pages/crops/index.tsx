@@ -1,6 +1,8 @@
+import { Crop } from '@prisma/client';
+import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
 import AddCropModal from 'components/Catalog/AddCropModal';
 import { useCropsQuery } from 'fetch/crops';
-import { Box, Button, Skeleton, Stack, useDisclosure } from 'fgui';
+import { Box, Button, Skeleton, Stack, T, Table, useDisclosure } from 'fgui';
 import { NextPage } from 'next';
 import React, { useCallback, useRef } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -22,6 +24,49 @@ const CropsPage: NextPage = () => {
       addCropButtonRef.current?.focus();
     });
   }, [closeAddCropModal, refetch]);
+
+  const columnHelper = createColumnHelper<Crop>();
+  const table = useReactTable<Crop>({
+    data: crops ?? [],
+    columns: [
+      columnHelper.accessor('name', {
+        header: () => (
+          <T.Label textAlign="left">
+            <FormattedMessage
+              defaultMessage="Name"
+              description="Table column header for the name of a crop"
+            />
+          </T.Label>
+        ),
+        cell: c => <T.BodyMd>{c.getValue()}</T.BodyMd>
+      }),
+      columnHelper.accessor('daysToMaturity', {
+        header: () => (
+          <T.Label textAlign="right">
+            <FormattedMessage
+              defaultMessage="Days to Maturity"
+              description="Table column header for the days to maturity of a crop"
+            />
+          </T.Label>
+        ),
+        cell: c => <T.BodyMd textAlign="right">{c.getValue()}</T.BodyMd>
+      }),
+      columnHelper.accessor('harvestWindow', {
+        header: () => (
+          <T.Label textAlign="right">
+            <FormattedMessage
+              defaultMessage="Harvest Window"
+              description="Table column header for the harvest window of a crop"
+            />
+          </T.Label>
+        ),
+        cell: c => <T.BodyMd textAlign="right">{c.getValue()}</T.BodyMd>
+      })
+    ],
+    getCoreRowModel: getCoreRowModel(),
+    getRowId: crop => `${crop.id}`
+  });
+
   return (
     <Box p={2}>
       <Button mb={10} onClick={openAddCropModal} ref={addCropButtonRef} variant="primary">
@@ -31,14 +76,12 @@ const CropsPage: NextPage = () => {
       <Stack>
         {isLoading && (
           <>
-            <Skeleton height={8} mt={2} width="100%" />
-            <Skeleton height={8} mt={2} width="100%" />
-            <Skeleton height={8} mt={2} width="100%" />
+            <Skeleton height={5} mt={2} width="100%" />
+            <Skeleton height={5} mt={2} width="100%" />
+            <Skeleton height={5} mt={2} width="100%" />
           </>
         )}
-        {crops?.map(crop => (
-          <div key={crop.id}>{crop.name}</div>
-        ))}
+        {!isLoading && <Table table={table} />}
       </Stack>
     </Box>
   );

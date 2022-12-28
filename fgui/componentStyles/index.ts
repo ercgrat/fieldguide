@@ -8,6 +8,7 @@ import Link from './Link';
 import Modal from './Modal';
 import NumberInput from './NumberInput';
 import Radio from './Radio';
+import Table from './Table';
 import Text from './Text';
 
 export default {
@@ -21,5 +22,6 @@ export default {
   Modal,
   NumberInput,
   Radio,
+  Table,
   Text
 };
