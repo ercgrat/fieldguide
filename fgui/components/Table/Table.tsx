@@ -1,7 +1,7 @@
-import { TableContainer, Table as ChakraTable, Td, Th } from '@chakra-ui/react';
+import { TableContainer, Table as ChakraTable, Th } from '@chakra-ui/react';
 import { flexRender } from '@tanstack/react-table';
 import { Table as TanstackTable } from '@tanstack/table-core';
-import { Box } from 'fgui';
+import TableRow from './TableRow';
 
 type Props<TData> = {
   table: TanstackTable<TData>;
@@ -49,14 +49,9 @@ const TableBase = <TData = unknown,>({ table }: Props<TData>) => {
           </thead>
         ))}
         {rows.map((row, index) => {
-          const isEven = index % 2 === 0;
           return (
             <tbody key={row.id}>
-              <Box as="tr" background={isEven ? 'bark.5' : 'bark.10'}>
-                {row.getAllCells().map(cell => (
-                  <Td key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</Td>
-                ))}
-              </Box>
+              <TableRow index={index} row={row} />
             </tbody>
           );
         })}

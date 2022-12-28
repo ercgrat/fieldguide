@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useRedirects } from 'utils/router';
-import { AppShell, Button, HStack, Icon, MenuItem, T, VStack, useDisclosure } from 'fgui';
+import { AppShell, Button, HStack, Icon, NavMenuItem, T, VStack, useDisclosure } from 'fgui';
 import { FormattedMessage } from 'react-intl';
 import { useBreakpointValue } from '@chakra-ui/react';
 import { Route } from 'utils/enums';
@@ -64,14 +64,14 @@ const App: React.FC<Props> = ({ children }) => {
       isOpen={isOpen}
       menu={
         <VStack alignItems="flex-start" w="100%">
-          <MenuItem onClick={() => handleRouteChange(Route.Crops)}>
+          <NavMenuItem onClick={() => handleRouteChange(Route.Crops)}>
             <Icon.List />
             <FormattedMessage
               defaultMessage="Crops"
               description="Title of the nav item for the crops screen"
               id="U/8/fS"
             />
-          </MenuItem>
+          </NavMenuItem>
         </VStack>
       }
       onToggle={onToggle}

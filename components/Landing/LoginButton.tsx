@@ -2,10 +2,13 @@ import React, { useCallback } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { signIn } from 'next-auth/react';
 import { Button, HStack, useToast } from 'fgui';
+import { useRouter } from 'next/router';
+import { Route } from 'utils/enums';
 
 const LoginButton: React.FC = () => {
   const intl = useIntl();
   const toast = useToast();
+  const router = useRouter();
 
   const logIn = useCallback(async () => {
     const res = await signIn('google');
@@ -22,8 +25,10 @@ const LoginButton: React.FC = () => {
           }
         )
       });
+    } else {
+      router.push(Route.Crops);
     }
-  }, [intl, toast]);
+  }, [intl, router, toast]);
 
   return (
     <Button onClick={logIn}>

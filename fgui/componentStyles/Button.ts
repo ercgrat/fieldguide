@@ -1,6 +1,6 @@
 import { defineStyleConfig, SystemStyleInterpolation } from '@chakra-ui/react';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger';
+export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger' | 'link';
 
 const variants: Record<ButtonVariant, SystemStyleInterpolation> = {
   primary: {
@@ -60,6 +60,19 @@ const variants: Record<ButtonVariant, SystemStyleInterpolation> = {
     },
     _hover: {
       background: 'cardinal.90'
+    }
+  },
+  link: {
+    border: 'none',
+    background: 'none',
+    boxShadow: 'none',
+    color: 'cornflower.90',
+    _active: {
+      border: 'solid 1px',
+      borderColor: 'cornflower.100'
+    },
+    _hover: {
+      background: 'cornflower.10'
     }
   }
 };

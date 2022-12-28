@@ -1,15 +1,20 @@
+'use client';
 import { useForm } from 'react-hook-form';
-import { useCreateCropMutation } from 'fetch/crops';
+import { useCreateCropMutation, useUpdateCropMutation } from 'fetch/crops';
 import { useCurrentOrganizationsQuery } from 'fetch/organizations';
 import React, { useCallback } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { APIRequestBody } from 'types/backend';
 import { Box, Button, HStack, Modal, NumberInput, TextInput, VStack } from 'fgui';
+import { Crop } from '@prisma/client';
 
 type Props = {
+  crop?: Crop;
   onClose: () => void;
+  onChange?: () => void;
 };
-const AddCropModal: React.FC<Props> = ({ onClose }) => {
+const CropModal: React.FC<Props> = ({ crop, onClose, onChange }) => {
+  const mode = crop?.id ? 'edit' : 'create';
   const intl = useIntl();
   const { data: organizations } = useCurrentOrganizationsQuery();
   const organizationId = organizations?.[0]?.id ?? 0;
@@ -18,7 +23,11 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
     handleSubmit: handleSubmitWrapper,
     formState: { errors },
     setValue
-  } = useForm<APIRequestBody.CreateCrop>();
+  } = useForm<APIRequestBody.CropCreate>({
+    defaultValues: {
+      ...crop
+    }
+  });
   const { onChange: _daysToMaturityOnChange, ...daysToMaturityProps } = register('daysToMaturity', {
     required: true
   });
@@ -26,27 +35,48 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
     required: true
   });
 
-  const { mutate, isLoading } = useCreateCropMutation({ onSuccess: onClose });
+  const { mutate: createCrop, isLoading: isCreatingCrop } = useCreateCropMutation({
+    onSuccess: () => onClose()
+  });
+  const { mutate: updateCrop, isLoading: isUpdatingCrop } = useUpdateCropMutation({
+    onSuccess: () => {
+      onChange?.();
+      onClose();
+    }
+  });
   const handleSubmit = useCallback(
-    (values: APIRequestBody.CreateCrop) => {
-      mutate({
+    (values: APIRequestBody.CropCreate) => {
+      const transformedData: APIRequestBody.CropCreate = {
         ...values,
         harvestWindow: Number(values.harvestWindow),
         daysToMaturity: Number(values.daysToMaturity),
         organizationId
-      });
+      };
+      if (mode === 'create') {
+        createCrop(transformedData);
+      } else {
+        updateCrop({ ...transformedData, id: Number(crop?.id) });
+      }
     },
-    [mutate, organizationId]
+    [createCrop, crop, mode, organizationId, updateCrop]
   );
 
   return (
     <Modal isOpen onClose={onClose}>
       <Modal.Header>
-        {intl.formatMessage({
-          defaultMessage: 'Add crop',
-          id: 'etqUIV',
-          description: 'Title of a modal for adding crops to your catalog'
-        })}
+        {mode === 'edit' ? (
+          <FormattedMessage
+            defaultMessage="Edit Crop"
+            description="Title of a modal for editing an existing crop in your catalog"
+            id="TU8jYF"
+          />
+        ) : (
+          <FormattedMessage
+            defaultMessage="Add Crop"
+            description="Title of a modal for adding crops to your catalog"
+            id="K64V+1"
+          />
+        )}
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmitWrapper(handleSubmit)}>
@@ -109,15 +139,23 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
           </Button>
           <Button
             disabled={!!Object.keys(errors).length}
-            loading={isLoading}
+            loading={isCreatingCrop || isUpdatingCrop}
             onClick={handleSubmitWrapper(handleSubmit)}
             variant="primary"
           >
-            <FormattedMessage
-              defaultMessage="Create crop"
-              description="Caption for submit button for the add crop modal"
-              id="7484Qi"
-            />
+            {mode === 'create' ? (
+              <FormattedMessage
+                defaultMessage="Create crop"
+                description="Caption for submit button for the add crop modal"
+                id="7484Qi"
+              />
+            ) : (
+              <FormattedMessage
+                defaultMessage="Save changes"
+                description="Caption for submit button for the edit crop modal"
+                id="8UgzT6"
+              />
+            )}
           </Button>
         </HStack>
       </Modal.Footer>
@@ -125,4 +163,4 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
   );
 };
 
-export default React.memo(AddCropModal);
+export default React.memo(CropModal);

@@ -7,7 +7,7 @@ export default {
       display: 'flex',
       flexDirection: 'column',
       width: '100vw',
-      height: '100%',
+      height: '100vh',
       maxHeight: '100%',
       overflow: 'clip'
     }

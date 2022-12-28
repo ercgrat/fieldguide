@@ -2,9 +2,10 @@
 
 import { Crop } from '@prisma/client';
 import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import AddCropModal from 'components/Catalog/AddCropModal';
-import { useCropsQuery, useDeleteCropMutation } from 'fetch/crops';
-import { Box, Button, Icon, Skeleton, Stack, T, Table, useDisclosure } from 'fgui';
+import CropActionMenu from 'components/Catalog/CropActionMenu';
+import CropModal from 'components/Catalog/CropModal';
+import { useCropsQuery } from 'fetch/crops';
+import { Box, Button, Skeleton, Stack, T, Table, useDisclosure } from 'fgui';
 import { NextPage } from 'next';
 import React, { useCallback, useRef } from 'react';
 import { FormattedMessage } from 'react-intl';
@@ -26,10 +27,6 @@ const CropsPage: NextPage = () => {
       addCropButtonRef.current?.focus();
     });
   }, [closeAddCropModal, refetch]);
-
-  const { mutate: deleteCrop } = useDeleteCropMutation({
-    onSuccess: () => refetch()
-  });
 
   const columnHelper = createColumnHelper<Crop>();
   const table = useReactTable<Crop>({
@@ -75,17 +72,7 @@ const CropsPage: NextPage = () => {
         id: 'action-cell',
         cell: c => (
           <T.BodyMd textAlign="right">
-            <Button
-              onClick={() =>
-                deleteCrop({
-                  id: c.row.original.id
-                })
-              }
-              size="sm"
-              variant="danger"
-            >
-              <Icon.Trash />
-            </Button>
+            <CropActionMenu crop={c.row.original} onChange={refetch} />
           </T.BodyMd>
         )
       })
@@ -96,14 +83,14 @@ const CropsPage: NextPage = () => {
 
   return (
     <Box p={2}>
-      <Button mb={2} onClick={openAddCropModal} ref={addCropButtonRef} variant="primary">
+      <Button autoFocus mb={2} onClick={openAddCropModal} ref={addCropButtonRef} variant="primary">
         <FormattedMessage
           defaultMessage="Add crop"
           description="Button label for adding crops"
           id="RraxE6"
         />
       </Button>
-      {isAddCropModalOpen && <AddCropModal onClose={handleCloseAddCropModal} />}
+      {isAddCropModalOpen && <CropModal onClose={handleCloseAddCropModal} />}
       <Stack>
         {isLoading && (
           <>

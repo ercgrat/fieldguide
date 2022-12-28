@@ -18,7 +18,6 @@ import {
 } from '@chakra-ui/react';
 
 import { Button, Divider, Flex, HStack, Icon, T } from 'fgui';
-import { useIntl } from 'react-intl';
 const ModalOverlayBase: React.FC<ChakraModalOverlayProps> = forwardRef<
   ChakraModalOverlayProps,
   'div'
@@ -86,38 +85,13 @@ const ModalFooter: React.FC<FooterProps> = forwardRef<FooterProps, 'footer'>(
     },
     ref
   ) => {
-    const intl = useIntl();
     return (
       <ChakraModalFooter {...props} ref={ref}>
         <Flex alignItems="start" direction="column" justifyContent="stretch" w="100%">
           <Divider />
-          {children ? (
-            children
-          ) : (
-            <HStack gap={2} justifyContent="flex-end" p={2}>
-              <Button onClick={onCancel}>
-                {cancelText ??
-                  intl.formatMessage({
-                    defaultMessage: 'Cancel',
-                    id: 'GFNyeI',
-                    description: 'Button text to close a modal in the modal footer'
-                  })}
-              </Button>
-              <Button
-                disabled={isDisabled}
-                loading={isLoading}
-                onClick={onConfirm}
-                variant="danger"
-              >
-                {confirmText ??
-                  intl.formatMessage({
-                    defaultMessage: 'Confirm',
-                    id: '4qGmrl',
-                    description: 'Button text to confirm a modal in the modal footer'
-                  })}
-              </Button>
-            </HStack>
-          )}
+          <HStack gap={1} justifyContent="flex-end" p={2} w="100%">
+            {children}
+          </HStack>
         </Flex>
       </ChakraModalFooter>
     );

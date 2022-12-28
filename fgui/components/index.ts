@@ -5,13 +5,14 @@ import { Toast, useToast } from './Toast';
 import { Card } from './Card';
 import { Radio, RadioGroup } from './Radio';
 import { Modal } from './Modal';
+import { Menu } from './Menu';
 import { Icon } from './Icon';
 import { NumberInput, TextInput } from './Input';
 import { Divider } from './Divider';
 import { Skeleton } from './Skeleton';
 import { Spinner } from './Spinner';
 import { Image } from './Image';
-import { AppShell, MenuItem, FooterPortal } from './AppShell';
+import { AppShell, NavMenuItem, FooterPortal } from './AppShell';
 import { Link } from './Link';
 import { Drawer } from './Drawer';
 import { Table } from './Table';
@@ -29,8 +30,9 @@ export {
   Icon,
   Image,
   Link,
-  MenuItem,
   Modal,
+  Menu,
+  NavMenuItem,
   NumberInput,
   Radio,
   RadioGroup,

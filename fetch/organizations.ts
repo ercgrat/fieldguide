@@ -55,13 +55,13 @@ export const useCreateOrganizationMutation = (args?: {
   onSuccess?:
     | ((
         data: Organization,
-        variables: APIRequestBody.CreateOrganization,
+        variables: APIRequestBody.OrganizationCreate,
         context: unknown
       ) => void | Promise<unknown>)
     | undefined;
 }) => {
   const { handleError } = useErrorHandler();
-  return useMutation<Organization, Error, APIRequestBody.CreateOrganization>(
+  return useMutation<Organization, Error, APIRequestBody.OrganizationCreate>(
     [QueryKey.Organization],
     organization => axios.post(urls.organizations(), organization),
     {

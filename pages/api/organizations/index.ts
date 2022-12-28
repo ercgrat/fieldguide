@@ -19,7 +19,7 @@ const getSchema: RequestSchema = Joi.object<Record<keyof NextApiRequest, AnySche
 
 const postSchema = Joi.object<Record<keyof NextApiRequest, AnySchema>>({
   method: 'POST',
-  body: Joi.object<APIRequestBody.CreateOrganization>({
+  body: Joi.object<APIRequestBody.OrganizationCreate>({
     name: Joi.string().required(),
     street1: Joi.string().required(),
     street2: Joi.string().allow(''),
@@ -62,7 +62,7 @@ const getOrganizations = (req: NextApiRequest, res: NextApiResponse<Organization
 };
 
 const createOrganization = (req: NextApiRequest, res: NextApiResponse<Organization>) => {
-  const { userId, ...organization } = req.body as APIRequestBody.CreateOrganization;
+  const { userId, ...organization } = req.body as APIRequestBody.OrganizationCreate;
   return new Promise((resolve, reject) => {
     const createOrganizationCommand = new CreateOrganizationCommand(organization, userId);
     const transaction = new SequentialTransaction([createOrganizationCommand]);

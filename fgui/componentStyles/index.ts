@@ -5,6 +5,7 @@ import Divider from './Divider';
 import Drawer from './Drawer';
 import Input from './Input';
 import Link from './Link';
+import Menu from './Menu';
 import Modal from './Modal';
 import NumberInput from './NumberInput';
 import Radio from './Radio';
@@ -19,6 +20,7 @@ export default {
   Drawer,
   Input,
   Link,
+  Menu,
   Modal,
   NumberInput,
   Radio,

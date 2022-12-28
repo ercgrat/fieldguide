@@ -4,7 +4,7 @@ import { APIRequestBody } from 'types/backend';
 import { db } from 'db';
 
 export default class CreateCropCommand implements Command<Crop> {
-  constructor(private crop: APIRequestBody.CreateCrop) {}
+  constructor(private crop: APIRequestBody.CropCreate) {}
 
   public execute() {
     return db.crop.create({

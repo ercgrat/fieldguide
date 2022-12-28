@@ -1,14 +1,15 @@
 import { Crop, Organization } from '@prisma/client';
 
 declare namespace APIRequestBody {
-  type CreateCrop = Omit<Crop, 'id'>;
-  type CreateOrganization = Omit<Organization, 'id' | 'created_at'> & {
+  type CropCreate = Omit<Crop, 'id'>;
+  type CropUpdate = Crop;
+  type OrganizationCreate = Omit<Organization, 'id' | 'created_at'> & {
     userId: string;
   };
 }
 
 declare namespace APIQueryParams {
-  type CropGet = Partial<Pick<Crop, 'organizationId'>>;
+  type CropRead = Partial<Pick<Crop, 'organizationId'>>;
 
   type CropDelete = Partial<Pick<Crop, 'id'>>;
 

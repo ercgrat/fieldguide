@@ -67,7 +67,7 @@ const Home: NextPage = () => {
     register,
     watch,
     setError
-  } = useForm<APIRequestBody.CreateOrganization>({
+  } = useForm<APIRequestBody.OrganizationCreate>({
     defaultValues: {
       name: '',
       street1: '',
@@ -117,7 +117,7 @@ const Home: NextPage = () => {
   }, []);
 
   const handleSubmitOrganization = useCallback(
-    (values: APIRequestBody.CreateOrganization) => {
+    (values: APIRequestBody.OrganizationCreate) => {
       mutate({ ...values, userId: user?.id ?? '' });
     },
     [mutate, user?.id]

@@ -9,15 +9,26 @@ import { SequentialTransaction } from 'db/Transaction';
 import CreateCropCommand from 'db/crops/CreateCropCommand';
 import GetCropCommand from 'db/crops/GetCropCommand';
 import DeleteCropCommand from 'db/crops/DeleteCropCommand';
+import UpdateCropCommand from 'db/crops/UpdateCropCommand';
 
-const getSchema: RequestSchema = Joi.object({
-  query: Joi.object<APIQueryParams.CropGet>({
+const createSchema: RequestSchema = Joi.object({
+  body: Joi.object<APIRequestBody.CropCreate>({
+    organizationId: Joi.number().required(),
+    name: Joi.string().required(),
+    daysToMaturity: Joi.number().required().min(0),
+    harvestWindow: Joi.number().required().min(1)
+  })
+});
+
+const readSchema: RequestSchema = Joi.object({
+  query: Joi.object<APIQueryParams.CropRead>({
     organizationId: Joi.number().required()
   })
 });
 
-const postSchema: RequestSchema = Joi.object({
-  body: Joi.object<APIRequestBody.CreateCrop>({
+const updateSchema: RequestSchema = Joi.object({
+  body: Joi.object<APIRequestBody.CropUpdate>({
+    id: Joi.number().required(),
     organizationId: Joi.number().required(),
     name: Joi.string().required(),
     daysToMaturity: Joi.number().required().min(0),
@@ -31,8 +42,28 @@ const deleteSchema: RequestSchema = Joi.object({
   })
 });
 
-const getCrops = (req: NextApiRequest, res: NextApiResponse<Crop[]>) => {
-  const query = req.query as APIQueryParams.CropGet;
+const createCrop = (req: NextApiRequest, res: NextApiResponse<Crop>) => {
+  const reqBodyCrop = req.body as APIRequestBody.CropCreate;
+  return new Promise((resolve, reject) => {
+    const createCropCommand = new CreateCropCommand(reqBodyCrop);
+    const transaction = new SequentialTransaction([createCropCommand]);
+    transaction
+      .execute()
+      .then(([crop]) => {
+        res.status(StatusCodes.OK).send(crop);
+        resolve(crop);
+      })
+      .catch((e: Error) => {
+        res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .setHeader(HttpResponseHeader.Error, JSON.stringify(e));
+        reject(e.message);
+      });
+  });
+};
+
+const readCrops = (req: NextApiRequest, res: NextApiResponse<Crop[]>) => {
+  const query = req.query as APIQueryParams.CropRead;
   const { organizationId } = query;
   return new Promise((resolve, reject) => {
     const getCropCommand = new GetCropCommand(Number(organizationId));
@@ -55,21 +86,23 @@ const getCrops = (req: NextApiRequest, res: NextApiResponse<Crop[]>) => {
   });
 };
 
-const createCrop = (req: NextApiRequest, res: NextApiResponse<Crop>) => {
-  const reqBodyCrop = req.body as APIRequestBody.CreateCrop;
+const updateCrop = (req: NextApiRequest, res: NextApiResponse<Crop>) => {
+  const body = req.body as APIRequestBody.CropUpdate;
   return new Promise((resolve, reject) => {
-    const createCropCommand = new CreateCropCommand(reqBodyCrop);
-    const transaction = new SequentialTransaction([createCropCommand]);
+    const updateCropCommand = new UpdateCropCommand(body);
+    const transaction = new SequentialTransaction([updateCropCommand]);
     transaction
       .execute()
       .then(([crop]) => {
-        res.status(StatusCodes.OK).send(crop);
+        if (crop) {
+          res.status(StatusCodes.OK).json(crop);
+        } else {
+          res.status(StatusCodes.NOT_FOUND);
+        }
         resolve(crop);
       })
       .catch((e: Error) => {
-        res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .setHeader(HttpResponseHeader.Error, JSON.stringify(e));
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR);
         reject(e.message);
       });
   });
@@ -98,13 +131,15 @@ const deleteCrop = (req: NextApiRequest, res: NextApiResponse<Crop>) => {
 
 export default withRouteSetup({
   schemas: {
-    [HttpMethod.GET]: getSchema,
-    [HttpMethod.POST]: postSchema,
+    [HttpMethod.POST]: createSchema,
+    [HttpMethod.GET]: readSchema,
+    [HttpMethod.PUT]: updateSchema,
     [HttpMethod.DELETE]: deleteSchema
   },
   handlers: {
-    [HttpMethod.GET]: getCrops,
     [HttpMethod.POST]: createCrop,
+    [HttpMethod.GET]: readCrops,
+    [HttpMethod.PUT]: updateCrop,
     [HttpMethod.DELETE]: deleteCrop
   }
 });

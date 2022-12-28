@@ -19,7 +19,7 @@ const Item = chakra('div', {
   }
 });
 
-const MenuItem = forwardRef<React.ComponentProps<typeof Item>, 'div'>(
+const NavMenuItem = forwardRef<React.ComponentProps<typeof Item>, 'div'>(
   ({ children, ...props }, ref) => {
     return (
       <Item {...props} ref={ref}>
@@ -31,4 +31,4 @@ const MenuItem = forwardRef<React.ComponentProps<typeof Item>, 'div'>(
   }
 );
 
-export default MenuItem;
+export default NavMenuItem;
