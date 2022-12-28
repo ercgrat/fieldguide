@@ -1,7 +1,7 @@
 import { Crop } from '@prisma/client';
 import axios from 'axios';
 import { useMutation, useQuery } from 'react-query';
-import { APIRequestBody } from 'types/backend';
+import { APIQueryParams, APIRequestBody } from 'types/backend';
 import { QueryKey } from 'utils/enums';
 import { useErrorHandler } from 'utils/error';
 import urls from 'utils/urls';
@@ -29,6 +29,18 @@ export const useCreateCropMutation = (args?: { onSuccess?: (data: Crop) => void 
   return useMutation<Crop, Error, APIRequestBody.CreateCrop>(
     [QueryKey.Crop],
     crop => axios.post(urls.crops(), crop),
+    {
+      onError: handleError,
+      onSuccess: args?.onSuccess
+    }
+  );
+};
+
+export const useDeleteCropMutation = (args?: { onSuccess?: (data: Crop) => void }) => {
+  const { handleError } = useErrorHandler();
+  return useMutation<Crop, Error, APIQueryParams.CropDelete>(
+    [QueryKey.Crop],
+    body => axios.delete(urls.crops(body)),
     {
       onError: handleError,
       onSuccess: args?.onSuccess

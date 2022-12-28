@@ -8,9 +8,10 @@ import { APIQueryParams, APIRequestBody } from 'types/backend';
 import { SequentialTransaction } from 'db/Transaction';
 import CreateCropCommand from 'db/crops/CreateCropCommand';
 import GetCropCommand from 'db/crops/GetCropCommand';
+import DeleteCropCommand from 'db/crops/DeleteCropCommand';
 
 const getSchema: RequestSchema = Joi.object({
-  query: Joi.object<APIQueryParams.Crop>({
+  query: Joi.object<APIQueryParams.CropGet>({
     organizationId: Joi.number().required()
   })
 });
@@ -24,8 +25,14 @@ const postSchema: RequestSchema = Joi.object({
   })
 });
 
+const deleteSchema: RequestSchema = Joi.object({
+  query: Joi.object<APIQueryParams.CropDelete>({
+    id: Joi.number().required()
+  })
+});
+
 const getCrops = (req: NextApiRequest, res: NextApiResponse<Crop[]>) => {
-  const query = req.query as APIQueryParams.Crop;
+  const query = req.query as APIQueryParams.CropGet;
   const { organizationId } = query;
   return new Promise((resolve, reject) => {
     const getCropCommand = new GetCropCommand(Number(organizationId));
@@ -68,13 +75,36 @@ const createCrop = (req: NextApiRequest, res: NextApiResponse<Crop>) => {
   });
 };
 
+const deleteCrop = (req: NextApiRequest, res: NextApiResponse<Crop>) => {
+  const query = req.query as APIQueryParams.CropDelete;
+  const { id } = query;
+  return new Promise((resolve, reject) => {
+    const deleteCropCommand = new DeleteCropCommand(Number(id));
+    const transaction = new SequentialTransaction([deleteCropCommand]);
+    transaction
+      .execute()
+      .then(([crop]) => {
+        res.status(StatusCodes.OK).send(crop);
+        resolve(crop);
+      })
+      .catch((e: Error) => {
+        res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .setHeader(HttpResponseHeader.Error, JSON.stringify(e));
+        reject(e.message);
+      });
+  });
+};
+
 export default withRouteSetup({
   schemas: {
     [HttpMethod.GET]: getSchema,
-    [HttpMethod.POST]: postSchema
+    [HttpMethod.POST]: postSchema,
+    [HttpMethod.DELETE]: deleteSchema
   },
   handlers: {
     [HttpMethod.GET]: getCrops,
-    [HttpMethod.POST]: createCrop
+    [HttpMethod.POST]: createCrop,
+    [HttpMethod.DELETE]: deleteCrop
   }
 });

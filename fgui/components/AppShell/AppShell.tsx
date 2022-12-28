@@ -50,9 +50,11 @@ const AppShell = forwardRef<Props, 'div'>(
             </HStack>
           </Box>
           <Box __css={contentStyles}>{children}</Box>
-          <Box __css={footerStyles} id={FOOTER_ID}>
-            {footer}
-          </Box>
+          {footer ? (
+            <Box __css={footerStyles} id={FOOTER_ID}>
+              {footer}
+            </Box>
+          ) : null}
         </Box>
 
         <Drawer

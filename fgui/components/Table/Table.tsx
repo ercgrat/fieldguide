@@ -1,7 +1,6 @@
 import { TableContainer, Table as ChakraTable, Td, Th } from '@chakra-ui/react';
 import { flexRender } from '@tanstack/react-table';
 import { Table as TanstackTable } from '@tanstack/table-core';
-import React from 'react';
 import { Box } from 'fgui';
 
 type Props<TData> = {
@@ -18,13 +17,13 @@ const TableBase = <TData = unknown,>({ table }: Props<TData>) => {
     <TableContainer>
       <ChakraTable
         sx={{
-          'thead > tr:first-child, thead > tr:first-child > th:first-child': {
+          'thead > tr:first-of-type, thead > tr:first-of-type > th:first-of-type': {
             borderTopLeftRadius: '4px'
           },
-          'thead > tr:first-child, thead > tr:first-child > th:last-child': {
+          'thead > tr:first-of-type, thead > tr:first-of-type > th:last-child': {
             borderTopRightRadius: '4px'
           },
-          'tbody > tr:last-child, tbody > tr:last-child > td:first-child': {
+          'tbody > tr:last-child, tbody > tr:last-child > td:first-of-type': {
             borderBottomLeftRadius: '4px'
           },
           'tbody > tr:last-child, tbody > tr:last-child > td:last-child': {
@@ -66,4 +65,4 @@ const TableBase = <TData = unknown,>({ table }: Props<TData>) => {
   );
 };
 
-export default React.memo(TableBase) as unknown as typeof TableBase;
+export default TableBase;

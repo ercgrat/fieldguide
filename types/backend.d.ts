@@ -8,9 +8,9 @@ declare namespace APIRequestBody {
 }
 
 declare namespace APIQueryParams {
-  type Crop = {
-    organizationId?: number;
-  };
+  type CropGet = Partial<Pick<Crop, 'organizationId'>>;
+
+  type CropDelete = Partial<Pick<Crop, 'id'>>;
 
   type Organization = {
     name?: string;

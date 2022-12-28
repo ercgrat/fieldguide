@@ -8,6 +8,9 @@ export default class GetCropCommand implements Command {
     return db.crop.findMany({
       where: {
         organizationId: this.organizationId
+      },
+      orderBy: {
+        name: 'asc'
       }
     });
   }
