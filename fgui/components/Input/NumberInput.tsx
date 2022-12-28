@@ -2,7 +2,8 @@ import {
   forwardRef,
   NumberInput as ChakraNumberInput,
   NumberInputField as ChakraNumberInputField,
-  NumberInputProps as ChakraNumberInputProps
+  NumberInputProps as ChakraNumberInputProps,
+  useDisclosure
 } from '@chakra-ui/react';
 import { fieldStyles } from './styles';
 import { Flex } from 'fgui';
@@ -10,6 +11,7 @@ import isNil from 'lodash/isNil';
 import { throwDeveloperError } from 'utils/error';
 import { ChangeEvent, useCallback } from 'react';
 import InputLabel from './InputLabel';
+import { useBorderColor } from './utils';
 
 type Props = Omit<ChakraNumberInputProps, 'onChange' | 'min' | 'max'> & {
   label?: string;
@@ -24,6 +26,9 @@ const NumberInput = forwardRef<Props, 'div'>(
     }
 
     const allowNegatives = !isNil(min) && min < 0;
+    const { isOpen: isFocused, onOpen: focus, onClose: blur } = useDisclosure();
+    const { isOpen: isHovered, onOpen: onMouseIn, onClose: onMouseOut } = useDisclosure();
+    const borderColor = useBorderColor({ isFocused, isHovered });
 
     const parse = useCallback(
       (value: string | undefined) => {
@@ -68,9 +73,19 @@ const NumberInput = forwardRef<Props, 'div'>(
           isRequired={isRequired}
           max={max}
           min={min}
+          onBlur={blur}
+          onFocus={focus}
+          onMouseOut={onMouseOut}
+          onMouseOver={onMouseIn}
           precision={precision}
         >
-          <ChakraNumberInputField max={max} min={min} onChange={handleChange} {...fieldStyles} />
+          <ChakraNumberInputField
+            borderColor={borderColor}
+            max={max}
+            min={min}
+            onChange={handleChange}
+            {...fieldStyles}
+          />
         </ChakraNumberInput>
       </Flex>
     );

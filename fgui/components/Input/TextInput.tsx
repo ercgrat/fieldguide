@@ -10,18 +10,21 @@ import { Flex } from 'fgui';
 import { useCallback } from 'react';
 import InputLabel from './InputLabel';
 import { fieldStyles } from './styles';
+import { useBorderColor } from './utils';
 
 type Props = Omit<InputProps, 'required'> & {
   label?: string;
   rightAddon?: React.ReactNode;
+  rightAddonBackgroundColor?: InputProps['color'];
 };
 const TextInput = forwardRef<Props, 'input'>(
-  ({ label, rightAddon, isRequired, onFocus, onBlur, ...props }, ref) => {
+  (
+    { label, rightAddon, rightAddonBackgroundColor, isRequired, onFocus, onBlur, ...props },
+    ref
+  ) => {
     const { isOpen: isFocused, onOpen: focus, onClose: blur } = useDisclosure();
     const { isOpen: isHovered, onOpen: onMouseIn, onClose: onMouseOut } = useDisclosure();
-    const borderColor = `${
-      isFocused ? 'cornflower.100' : isHovered ? 'cornflower.50' : 'bark.25'
-    } !important`;
+    const borderColor = useBorderColor({ isFocused, isHovered });
 
     const handleFocus = useCallback(
       (e: React.FocusEvent<HTMLInputElement>) => {
@@ -56,7 +59,12 @@ const TextInput = forwardRef<Props, 'input'>(
             {...props}
           />
           {rightAddon && (
-            <InputRightAddon borderColor={borderColor} borderLeft="none" h="36px">
+            <InputRightAddon
+              background={rightAddonBackgroundColor}
+              borderColor={borderColor}
+              borderLeft="none"
+              h="36px"
+            >
               {rightAddon}
             </InputRightAddon>
           )}

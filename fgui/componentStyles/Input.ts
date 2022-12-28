@@ -12,7 +12,9 @@ const baseStyle = definePartsStyle({
   },
   addon: {
     color: 'bark.90',
-    backgroundColor: 'bark.10'
+    backgroundColor: 'bark.10',
+    transitionProperty: 'border-color',
+    transitionDuration: 'normal'
   }
 });
 

@@ -122,6 +122,8 @@ const Home: NextPage = () => {
     [mutate, user?.id]
   );
 
+  const isNameAvailable = !!name?.length && !isNameCheckStale;
+
   return (
     <Box m={6}>
       {active === OnboardingStep.One ? (
@@ -208,14 +210,15 @@ const Home: NextPage = () => {
                     rightAddon={
                       isCheckingNameMatches ? (
                         <Spinner size="sm" />
-                      ) : name?.length && !isNameCheckStale ? (
+                      ) : isNameAvailable ? (
                         !orgMatches?.length ? (
-                          <Icon.Check />
+                          <Icon.Check color="forest.80" />
                         ) : (
-                          <Icon.X />
+                          <Icon.X color="cardinal.120" />
                         )
                       ) : null
                     }
+                    rightAddonBackgroundColor={isNameAvailable ? 'forest.10' : 'cardinal.10'}
                   />
                   <TextInput
                     label={intl.formatMessage({
