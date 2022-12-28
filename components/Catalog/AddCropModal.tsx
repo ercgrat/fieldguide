@@ -44,6 +44,7 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
       <Modal.Header>
         {intl.formatMessage({
           defaultMessage: 'Add crop',
+          id: 'etqUIV',
           description: 'Title of a modal for adding crops to your catalog'
         })}
       </Modal.Header>
@@ -57,10 +58,12 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
               {...register('name', { required: true })}
               label={intl.formatMessage({
                 defaultMessage: 'Name',
+                id: '0R8pDB',
                 description: 'Label for the name input when creating a crop'
               })}
               placeholder={intl.formatMessage({
                 defaultMessage: 'Tomatoes',
+                id: 'tsSulk',
                 description:
                   'Example crop shown as a placeholder for the name field when creating a crop'
               })}
@@ -70,6 +73,7 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
                 isRequired
                 label={intl.formatMessage({
                   defaultMessage: 'Days to maturity',
+                  id: 'IkoKCv',
                   description:
                     'Label for the number input for days to maturity when creating a crop'
                 })}
@@ -82,6 +86,7 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
                 isRequired
                 label={intl.formatMessage({
                   defaultMessage: 'Harvest window (days)',
+                  id: 'xq5zUL',
                   description: 'Label for the number input for harvest window when creating a crop'
                 })}
                 {...harvestWindowProps}
@@ -99,6 +104,7 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
             <FormattedMessage
               defaultMessage="Cancel"
               description="Caption for cancel button to close the add crop modal"
+              id="P08zgD"
             />
           </Button>
           <Button
@@ -110,6 +116,7 @@ const AddCropModal: React.FC<Props> = ({ onClose }) => {
             <FormattedMessage
               defaultMessage="Create crop"
               description="Caption for submit button for the add crop modal"
+              id="7484Qi"
             />
           </Button>
         </HStack>

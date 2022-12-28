@@ -25,12 +25,14 @@ const Root: NextPage = () => {
           <FormattedMessage
             defaultMessage="Spend more time in the field"
             description="Marketing message on the login page"
+            id="qZfJWV"
           />
         </T.Heading4xl>
         <T.Heading2xl color="forest.60" ml={[0, 0, 4]} mt={2}>
           <FormattedMessage
             defaultMessage="Get organized with our advanced crop planning tools"
             description="Marketing message on the login page"
+            id="mzpgT4"
           />
         </T.Heading2xl>
         <Card mt={4}>
@@ -58,6 +60,7 @@ const Root: NextPage = () => {
                   <FormattedMessage
                     defaultMessage="Welcome to Field Guide"
                     description="Welcome message on the log in page"
+                    id="8t9N7z"
                   />
                 </T.Heading2xl>
                 <Divider my={6} />

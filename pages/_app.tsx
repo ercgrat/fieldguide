@@ -6,8 +6,10 @@ import './globalStyles.css';
 import App from '../components/Landing/App';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { SessionProvider } from 'next-auth/react';
+import { Open_Sans } from '@next/font/google';
 
 const queryClient = new QueryClient();
+const openSans = Open_Sans({ subsets: ['latin'] });
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -16,9 +18,11 @@ function MyApp({ Component, pageProps }: AppProps) {
         <ThemeProvider>
           <QueryClientProvider client={queryClient}>
             <SessionProvider>
-              <App>
-                <Component {...pageProps} />
-              </App>
+              <main className={openSans.className}>
+                <App>
+                  <Component {...pageProps} />
+                </App>
+              </main>
             </SessionProvider>
           </QueryClientProvider>
         </ThemeProvider>

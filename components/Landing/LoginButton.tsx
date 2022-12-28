@@ -14,6 +14,7 @@ const LoginButton: React.FC = () => {
         description: intl.formatMessage(
           {
             defaultMessage: 'Failed to log in with Google: {message}',
+            id: '9vwv4e',
             description: 'Error that appears when Google login fails.'
           },
           {
@@ -57,6 +58,7 @@ const LoginButton: React.FC = () => {
         <FormattedMessage
           defaultMessage="Log in with Google"
           description="Text on a button to log in with Google"
+          id="zDsUyt"
         />
       </HStack>
     </Button>

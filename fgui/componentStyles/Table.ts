@@ -12,7 +12,8 @@ const baseStyle = definePartsStyle({
     borderSpacing: 0
   },
   th: {
-    backgroundColor: 'bark.15'
+    backgroundColor: 'bark.15',
+    fontFamily: 'inherit'
   }
 });
 

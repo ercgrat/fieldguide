@@ -99,6 +99,7 @@ const ModalFooter: React.FC<FooterProps> = forwardRef<FooterProps, 'footer'>(
                 {cancelText ??
                   intl.formatMessage({
                     defaultMessage: 'Cancel',
+                    id: 'GFNyeI',
                     description: 'Button text to close a modal in the modal footer'
                   })}
               </Button>
@@ -111,6 +112,7 @@ const ModalFooter: React.FC<FooterProps> = forwardRef<FooterProps, 'footer'>(
                 {confirmText ??
                   intl.formatMessage({
                     defaultMessage: 'Confirm',
+                    id: '4qGmrl',
                     description: 'Button text to confirm a modal in the modal footer'
                   })}
               </Button>

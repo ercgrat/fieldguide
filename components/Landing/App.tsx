@@ -44,13 +44,18 @@ const App: React.FC<Props> = ({ children }) => {
       header={
         <HStack flex={1} justifyContent="space-between">
           <T.HeadingXl>
-            <FormattedMessage defaultMessage="Field Guide" description="Title of the application" />
+            <FormattedMessage
+              defaultMessage="Field Guide"
+              description="Title of the application"
+              id="w6OLlU"
+            />
           </T.HeadingXl>
           {status === 'authenticated' && (
             <Button display={display} onClick={handleLogOut} variant="danger">
               <FormattedMessage
                 defaultMessage="Log out"
                 description="Button to log the user out of the application"
+                id="8xX0PK"
               />
             </Button>
           )}
@@ -64,6 +69,7 @@ const App: React.FC<Props> = ({ children }) => {
             <FormattedMessage
               defaultMessage="Crops"
               description="Title of the nav item for the crops screen"
+              id="U/8/fS"
             />
           </MenuItem>
         </VStack>

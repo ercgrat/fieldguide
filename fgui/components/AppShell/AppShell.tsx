@@ -60,6 +60,7 @@ const AppShell = forwardRef<Props, 'div'>(
             <FormattedMessage
               defaultMessage="Field Guide"
               description="Title of the application in the nav menu"
+              id="tXPiPl"
             />
           }
           isOpen={isOpen}

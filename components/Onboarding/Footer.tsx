@@ -18,6 +18,7 @@ const Footer: React.FC<Props> = ({ active, isLoading, goToStepOne, goToStepTwo, 
           <FormattedMessage
             defaultMessage="Next step"
             description="Caption for button for going to the next onboarding step"
+            id="oDTEsb"
           />
         </Button>
       ) : active === OnboardingStep.Two ? (
@@ -26,12 +27,14 @@ const Footer: React.FC<Props> = ({ active, isLoading, goToStepOne, goToStepTwo, 
             <FormattedMessage
               defaultMessage="Back"
               description="Label of button that brings you back one step in the onboarding process"
+              id="HiPcVN"
             />
           </Button>
           <Button loading={isLoading} onClick={onSubmitForm} variant="primary">
             <FormattedMessage
               defaultMessage="Create farm"
               description="Label of button that creates a new farm in the onboarding process"
+              id="uJeC/9"
             />
           </Button>
         </>

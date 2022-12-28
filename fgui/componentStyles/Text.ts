@@ -2,6 +2,7 @@ import { defineStyleConfig } from '@chakra-ui/react';
 
 export default defineStyleConfig({
   baseStyle: {
-    color: 'inherit'
+    color: 'inherit',
+    fontFamily: 'inherit'
   }
 });

@@ -35,6 +35,7 @@ const CropsPage: NextPage = () => {
             <FormattedMessage
               defaultMessage="Name"
               description="Table column header for the name of a crop"
+              id="anzty/"
             />
           </T.Label>
         ),
@@ -46,6 +47,7 @@ const CropsPage: NextPage = () => {
             <FormattedMessage
               defaultMessage="Days to Maturity"
               description="Table column header for the days to maturity of a crop"
+              id="x/zUnG"
             />
           </T.Label>
         ),
@@ -57,6 +59,7 @@ const CropsPage: NextPage = () => {
             <FormattedMessage
               defaultMessage="Harvest Window"
               description="Table column header for the harvest window of a crop"
+              id="gulkDN"
             />
           </T.Label>
         ),
@@ -69,8 +72,12 @@ const CropsPage: NextPage = () => {
 
   return (
     <Box p={2}>
-      <Button mb={10} onClick={openAddCropModal} ref={addCropButtonRef} variant="primary">
-        <FormattedMessage defaultMessage="Add crop" description="Button label for adding crops" />
+      <Button mb={2} onClick={openAddCropModal} ref={addCropButtonRef} variant="primary">
+        <FormattedMessage
+          defaultMessage="Add crop"
+          description="Button label for adding crops"
+          id="RraxE6"
+        />
       </Button>
       {isAddCropModalOpen && <AddCropModal onClose={handleCloseAddCropModal} />}
       <Stack>

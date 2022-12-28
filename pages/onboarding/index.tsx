@@ -100,6 +100,7 @@ const Home: NextPage = () => {
       setError('name', {
         message: intl.formatMessage({
           defaultMessage: 'This name is already taken. Please choose a different name.',
+          id: '6/kDRO',
           description:
             'Error message shown when the name entered for a new farm matches an existing farm.'
         })
@@ -132,6 +133,7 @@ const Home: NextPage = () => {
             <FormattedMessage
               defaultMessage="Are you a farm owner or a farm worker?"
               description="Title of the first onboarding question"
+              id="+LRtdl"
             />
           </T.HeadingLg>
           <RadioGroup onChange={handleChangeRole} pt={4} size="lg" value={role}>
@@ -139,6 +141,7 @@ const Home: NextPage = () => {
               <RadioCard
                 label={intl.formatMessage({
                   defaultMessage: 'Owner',
+                  id: 'dZfniN',
                   description: 'Title of onboarding section for farm owners'
                 })}
                 selectedValue={role}
@@ -148,6 +151,7 @@ const Home: NextPage = () => {
                   <FormattedMessage
                     defaultMessage="Select this option if you are the owner of a farm business or have never used FieldGuide before."
                     description="Instructions for the 'Create your own farm' option when onboarding a new organization."
+                    id="cWxguv"
                   />
                 </T.BodyMd>
                 <Image fit="cover" height={360} my={6} src="owner.jpg" />
@@ -155,6 +159,7 @@ const Home: NextPage = () => {
               <RadioCard
                 label={intl.formatMessage({
                   defaultMessage: 'Worker',
+                  id: 'd1l5R6',
                   description: 'Title of onboarding section for farm workers'
                 })}
                 selectedValue={role}
@@ -164,6 +169,7 @@ const Home: NextPage = () => {
                   <FormattedMessage
                     defaultMessage="Select this option if you are a farm employee and your manager already has a farm set up on FieldGuide."
                     description="Instructions for the 'Join an existing farm' option when onboarding a new organization."
+                    id="hjDUar"
                   />
                 </T.BodyMd>
                 <Image fit="cover" height={360} my={6} src="workers.jpg" />
@@ -178,6 +184,7 @@ const Home: NextPage = () => {
             <FormattedMessage
               defaultMessage="Tell us about your farm"
               description="Message above a form allowing the user to enter details about a farm when creating one as part of onboarding"
+              id="CNi5TG"
             />
           </T.HeadingLg>
           <Box alignSelf="center">
@@ -189,10 +196,12 @@ const Home: NextPage = () => {
                     autoFocus
                     label={intl.formatMessage({
                       defaultMessage: 'Farm Name',
+                      id: 'czwvfs',
                       description: 'Label for a text input for the name of an organization'
                     })}
                     placeholder={intl.formatMessage({
                       defaultMessage: "Francine's Fine Fruits",
+                      id: '7bCUpY',
                       description:
                         'Example name of a farm used as a placeholder in the input for a farm name'
                     })}
@@ -203,6 +212,7 @@ const Home: NextPage = () => {
                           ? undefined
                           : intl.formatMessage({
                               defaultMessage: 'Name is required',
+                              id: '0IP+z3',
                               description:
                                 'Validation message that appears when a user does not type in a company name'
                             })
@@ -223,10 +233,12 @@ const Home: NextPage = () => {
                   <TextInput
                     label={intl.formatMessage({
                       defaultMessage: 'Email',
+                      id: 'i+gBw6',
                       description: 'Label for a text input for the email address of a farm'
                     })}
                     placeholder={intl.formatMessage({
                       defaultMessage: 'your.farm@gmail.com',
+                      id: 'YoZTxH',
                       description:
                         'Example email address of a farm used as a placeholder in the input for a farm email address'
                     })}
@@ -237,6 +249,7 @@ const Home: NextPage = () => {
                           ? undefined
                           : intl.formatMessage({
                               defaultMessage: 'Enter a valid email address',
+                              id: 'vD4QJQ',
                               description:
                                 'Validation message that appears when a user types in an invalid email address'
                             })
@@ -245,10 +258,12 @@ const Home: NextPage = () => {
                   <TextInput
                     label={intl.formatMessage({
                       defaultMessage: 'Phone Number',
+                      id: 'e290Ks',
                       description: 'Label for a text input for the phone number of a farm'
                     })}
                     placeholder={intl.formatMessage({
                       defaultMessage: '(555) 555-5555',
+                      id: 'r+mjeR',
                       description:
                         'Example phone number of a farm used as a placeholder in the input for a farm phone number'
                     })}
@@ -259,6 +274,7 @@ const Home: NextPage = () => {
                           ? undefined
                           : intl.formatMessage({
                               defaultMessage: 'Enter a valid phone number',
+                              id: '2+ZdAV',
                               description:
                                 'Validation message that appears when a user types in an invalid phone number'
                             })
@@ -267,10 +283,12 @@ const Home: NextPage = () => {
                   <TextInput
                     label={intl.formatMessage({
                       defaultMessage: 'Address 1',
+                      id: 'bt+sPG',
                       description: 'Label for a text input for the first address line of a farm'
                     })}
                     placeholder={intl.formatMessage({
                       defaultMessage: '10 Eggplant Blvd',
+                      id: 'uiyW3Z',
                       description:
                         'Example address line of a farm used as a placeholder in the input for a farm address 1'
                     })}
@@ -280,10 +298,12 @@ const Home: NextPage = () => {
                   <TextInput
                     label={intl.formatMessage({
                       defaultMessage: 'Address 2',
+                      id: 'PRtmar',
                       description: 'Label for a text input for the second address line of a farm'
                     })}
                     placeholder={intl.formatMessage({
                       defaultMessage: 'APT 101',
+                      id: 'o30b6E',
                       description:
                         'Example address line of a farm used as a placeholder in the input for a farm address 2'
                     })}
@@ -293,10 +313,12 @@ const Home: NextPage = () => {
                     <TextInput
                       label={intl.formatMessage({
                         defaultMessage: 'City',
+                        id: 'sdTk5B',
                         description: 'Label for a text input for the state of a farm address'
                       })}
                       placeholder={intl.formatMessage({
                         defaultMessage: 'Farmville',
+                        id: 'cwa77E',
                         description:
                           'Example city of a farm used as a placeholder in the input for a farm address city'
                       })}
@@ -306,11 +328,13 @@ const Home: NextPage = () => {
                     <TextInput
                       label={intl.formatMessage({
                         defaultMessage: 'State',
+                        id: '8pJBpP',
                         description: 'Label for a text input for the state of a farm address'
                       })}
                       maxLength={2}
                       placeholder={intl.formatMessage({
                         defaultMessage: 'NY',
+                        id: 'OEWkCm',
                         description:
                           'Example state of a farm used as a placeholder in the input for a farm address state'
                       })}
@@ -320,10 +344,12 @@ const Home: NextPage = () => {
                     <TextInput
                       label={intl.formatMessage({
                         defaultMessage: 'Post Code',
+                        id: '48xXxO',
                         description: 'Label for a text input for the post code of a farm address'
                       })}
                       placeholder={intl.formatMessage({
                         defaultMessage: '12345',
+                        id: 'F9RHaO',
                         description:
                           'Example post code of a farm used as a placeholder in the input for a farm address post code'
                       })}
@@ -335,6 +361,7 @@ const Home: NextPage = () => {
                     <T.Label>
                       {intl.formatMessage({
                         defaultMessage: 'System of Units',
+                        id: 'rzW802',
                         description:
                           'Label for radio button group selecting the unit system (imperial or metric) for the organization'
                       })}
@@ -343,12 +370,14 @@ const Home: NextPage = () => {
                       <Radio value={UnitSystem.Imperial} {...register('unitSystem')}>
                         {intl.formatMessage({
                           defaultMessage: 'Imperial',
+                          id: 'qI5DGb',
                           description: 'Radio button label for the imperial system of units'
                         })}
                       </Radio>
                       <Radio value={UnitSystem.Metric} {...register('unitSystem')}>
                         {intl.formatMessage({
                           defaultMessage: 'Metric',
+                          id: 'jk281k',
                           description: 'Radio button label for the metric system of units'
                         })}
                       </Radio>
