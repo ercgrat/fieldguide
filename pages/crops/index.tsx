@@ -7,7 +7,7 @@ import CropModal from 'components/Crops/CropModal';
 import { useCropsQuery } from 'fetch/crops';
 import { Box, Button, Skeleton, Stack, T, Table, useDisclosure } from 'fgui';
 import { NextPage } from 'next';
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 const CropsPage: NextPage = () => {

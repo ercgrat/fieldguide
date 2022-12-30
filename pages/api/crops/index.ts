@@ -50,8 +50,12 @@ const createCrop = (req: NextApiRequest, res: NextApiResponse<Crop>) => {
     transaction
       .execute()
       .then(([crop]) => {
-        res.status(StatusCodes.OK).send(crop);
-        resolve(crop);
+        if (crop) {
+          res.status(StatusCodes.OK).send(crop);
+          resolve(crop);
+        } else {
+          throw new Error('Failed to create crop');
+        }
       })
       .catch((e: Error) => {
         res
@@ -117,8 +121,12 @@ const deleteCrop = (req: NextApiRequest, res: NextApiResponse<Crop>) => {
     transaction
       .execute()
       .then(([crop]) => {
-        res.status(StatusCodes.OK).send(crop);
-        resolve(crop);
+        if (crop) {
+          res.status(StatusCodes.OK).send(crop);
+          resolve(crop);
+        } else {
+          throw new Error('Failed to delete crop');
+        }
       })
       .catch((e: Error) => {
         res

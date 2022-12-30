@@ -69,8 +69,12 @@ const createOrganization = (req: NextApiRequest, res: NextApiResponse<Organizati
     transaction
       .execute()
       .then(([newOrg]) => {
-        res.status(StatusCodes.OK).send(newOrg);
-        resolve(newOrg);
+        if (newOrg) {
+          res.status(StatusCodes.OK).send(newOrg);
+          resolve(newOrg);
+        } else {
+          throw new Error('Failed to create organization');
+        }
       })
       .catch((e: Error) => {
         res
