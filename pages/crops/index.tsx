@@ -2,8 +2,8 @@
 
 import { Crop } from '@prisma/client';
 import { createColumnHelper, getCoreRowModel, useReactTable } from '@tanstack/react-table';
-import CropActionMenu from 'components/Catalog/CropActionMenu';
-import CropModal from 'components/Catalog/CropModal';
+import CropActionMenu from 'components/Crops/CropActionMenu';
+import CropModal from 'components/Crops/CropModal';
 import { useCropsQuery } from 'fetch/crops';
 import { Box, Button, Skeleton, Stack, T, Table, useDisclosure } from 'fgui';
 import { NextPage } from 'next';
@@ -19,13 +19,9 @@ const CropsPage: NextPage = () => {
   } = useDisclosure({
     defaultIsOpen: false
   });
-  const addCropButtonRef = useRef<HTMLButtonElement>(null);
-  const handleCloseAddCropModal = useCallback(() => {
+  const handleCropAdded = useCallback(() => {
     closeAddCropModal();
     refetch();
-    setTimeout(() => {
-      addCropButtonRef.current?.focus();
-    });
   }, [closeAddCropModal, refetch]);
 
   const columnHelper = createColumnHelper<Crop>();
@@ -83,14 +79,14 @@ const CropsPage: NextPage = () => {
 
   return (
     <Box p={2}>
-      <Button autoFocus mb={2} onClick={openAddCropModal} ref={addCropButtonRef} variant="primary">
+      <Button autoFocus mb={2} onClick={openAddCropModal} variant="primary">
         <FormattedMessage
           defaultMessage="Add crop"
           description="Button label for adding crops"
           id="RraxE6"
         />
       </Button>
-      {isAddCropModalOpen && <CropModal onClose={handleCloseAddCropModal} />}
+      {isAddCropModalOpen && <CropModal onCancel={closeAddCropModal} onChange={handleCropAdded} />}
       <Stack>
         {isLoading && (
           <>

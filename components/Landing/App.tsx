@@ -79,6 +79,14 @@ const App: React.FC<Props> = ({ children }) => {
                 id="U/8/fS"
               />
             </NavMenuItem>
+            <NavMenuItem onClick={() => handleRouteChange(Route.Plan)}>
+              <Icon.Clipboard />
+              <FormattedMessage
+                defaultMessage="Plan"
+                description="Title of the nav item for the plan screen"
+                id="YF6RW6"
+              />
+            </NavMenuItem>
           </VStack>
         }
         onToggle={onToggle}

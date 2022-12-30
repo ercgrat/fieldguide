@@ -10,10 +10,10 @@ import { OrganizationContext } from 'contexts/organization';
 
 type Props = {
   crop?: Crop;
-  onClose: () => void;
-  onChange?: () => void;
+  onCancel: () => void;
+  onChange: () => void;
 };
-const CropModal: React.FC<Props> = ({ crop, onClose, onChange }) => {
+const CropModal: React.FC<Props> = ({ crop, onCancel: onClose, onChange }) => {
   const mode = crop?.id ? 'edit' : 'create';
   const intl = useIntl();
   const { id: organizationId } = useContext(OrganizationContext) ?? {};
@@ -35,13 +35,10 @@ const CropModal: React.FC<Props> = ({ crop, onClose, onChange }) => {
   });
 
   const { mutate: createCrop, isLoading: isCreatingCrop } = useCreateCropMutation({
-    onSuccess: () => onClose()
+    onSuccess: () => onChange?.()
   });
   const { mutate: updateCrop, isLoading: isUpdatingCrop } = useUpdateCropMutation({
-    onSuccess: () => {
-      onChange?.();
-      onClose();
-    }
+    onSuccess: () => onChange?.()
   });
   const handleSubmit = useCallback(
     (values: APIRequestBody.CropCreate) => {

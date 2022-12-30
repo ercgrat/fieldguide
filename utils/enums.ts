@@ -8,7 +8,8 @@ export enum QueryKey {
 export enum Route {
   Crops = '/crops',
   Login = '/',
-  Onboarding = '/onboarding'
+  Onboarding = '/onboarding',
+  Plan = '/plan'
 }
 
 export enum HttpResponseHeader {

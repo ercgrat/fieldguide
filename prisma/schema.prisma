@@ -37,6 +37,7 @@ model Crop {
   name           String
   daysToMaturity Int?
   harvestWindow  Int?
+  Planting       Planting[]
 }
 
 model Membership {
@@ -64,6 +65,16 @@ model Organization {
   unitSystem UnitSystem
   Membership Membership[]
   Crop       Crop[]
+}
+
+model Planting {
+  id           Int      @id @default(autoincrement())
+  created_at   DateTime @default(now())
+  cropId       Int
+  crop         Crop     @relation(fields: [cropId], references: [id])
+  bedLength    Int?
+  rowsPerPed   Int?
+  inRowSpacing Int?
 }
 
 model Session {

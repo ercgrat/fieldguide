@@ -194,6 +194,7 @@ const Home: NextPage = () => {
                 <VStack alignItems="stretch">
                   <TextInput
                     autoFocus
+                    isRequired
                     label={intl.formatMessage({
                       defaultMessage: 'Farm Name',
                       id: 'czwvfs',
@@ -205,7 +206,6 @@ const Home: NextPage = () => {
                       description:
                         'Example name of a farm used as a placeholder in the input for a farm name'
                     })}
-                    required
                     {...register('name', {
                       validate: (v: string | undefined) =>
                         v
@@ -231,6 +231,7 @@ const Home: NextPage = () => {
                     rightAddonBackgroundColor={isNameAvailable ? 'forest.10' : 'cardinal.10'}
                   />
                   <TextInput
+                    isRequired
                     label={intl.formatMessage({
                       defaultMessage: 'Email',
                       id: 'i+gBw6',
@@ -242,7 +243,6 @@ const Home: NextPage = () => {
                       description:
                         'Example email address of a farm used as a placeholder in the input for a farm email address'
                     })}
-                    required
                     {...register('email', {
                       validate: (v: string) =>
                         validateEmail(v)
@@ -256,6 +256,7 @@ const Home: NextPage = () => {
                     })}
                   />
                   <TextInput
+                    isRequired
                     label={intl.formatMessage({
                       defaultMessage: 'Phone Number',
                       id: 'e290Ks',
@@ -267,7 +268,6 @@ const Home: NextPage = () => {
                       description:
                         'Example phone number of a farm used as a placeholder in the input for a farm phone number'
                     })}
-                    required
                     {...register('phone', {
                       validate: (v: string | null) =>
                         validatePhoneNumber(v)
@@ -281,6 +281,7 @@ const Home: NextPage = () => {
                     })}
                   />
                   <TextInput
+                    isRequired
                     label={intl.formatMessage({
                       defaultMessage: 'Address 1',
                       id: 'bt+sPG',
@@ -292,7 +293,6 @@ const Home: NextPage = () => {
                       description:
                         'Example address line of a farm used as a placeholder in the input for a farm address 1'
                     })}
-                    required
                     {...register('street1')}
                   />
                   <TextInput
@@ -311,6 +311,7 @@ const Home: NextPage = () => {
                   />
                   <HStack justifyContent="space-between">
                     <TextInput
+                      isRequired
                       label={intl.formatMessage({
                         defaultMessage: 'City',
                         id: 'sdTk5B',
@@ -322,10 +323,10 @@ const Home: NextPage = () => {
                         description:
                           'Example city of a farm used as a placeholder in the input for a farm address city'
                       })}
-                      required
                       {...register('city')}
                     />
                     <TextInput
+                      isRequired
                       label={intl.formatMessage({
                         defaultMessage: 'State',
                         id: '8pJBpP',
@@ -338,10 +339,10 @@ const Home: NextPage = () => {
                         description:
                           'Example state of a farm used as a placeholder in the input for a farm address state'
                       })}
-                      required
                       {...register('state')}
                     />
                     <TextInput
+                      isRequired
                       label={intl.formatMessage({
                         defaultMessage: 'Post Code',
                         id: '48xXxO',
@@ -353,7 +354,6 @@ const Home: NextPage = () => {
                         description:
                           'Example post code of a farm used as a placeholder in the input for a farm address post code'
                       })}
-                      required
                       {...register('postCode')}
                     />
                   </HStack>

@@ -12,11 +12,12 @@ import InputLabel from './InputLabel';
 import { fieldStyles } from './styles';
 import { useBorderColor } from './utils';
 
-type Props = Omit<InputProps, 'required'> & {
+type Props = InputProps & {
   label?: string;
   rightAddon?: React.ReactNode;
   rightAddonBackgroundColor?: InputProps['color'];
 };
+
 const TextInput = forwardRef<Props, 'input'>(
   (
     { label, rightAddon, rightAddonBackgroundColor, isRequired, onFocus, onBlur, ...props },
