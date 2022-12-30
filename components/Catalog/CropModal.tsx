@@ -1,12 +1,12 @@
 'use client';
 import { useForm } from 'react-hook-form';
 import { useCreateCropMutation, useUpdateCropMutation } from 'fetch/crops';
-import { useCurrentOrganizationsQuery } from 'fetch/organizations';
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { APIRequestBody } from 'types/backend';
 import { Box, Button, HStack, Modal, NumberInput, TextInput, VStack } from 'fgui';
 import { Crop } from '@prisma/client';
+import { OrganizationContext } from 'contexts/organization';
 
 type Props = {
   crop?: Crop;
@@ -16,8 +16,7 @@ type Props = {
 const CropModal: React.FC<Props> = ({ crop, onClose, onChange }) => {
   const mode = crop?.id ? 'edit' : 'create';
   const intl = useIntl();
-  const { data: organizations } = useCurrentOrganizationsQuery();
-  const organizationId = organizations?.[0]?.id ?? 0;
+  const { id: organizationId } = useContext(OrganizationContext) ?? {};
   const {
     register,
     handleSubmit: handleSubmitWrapper,
@@ -46,6 +45,10 @@ const CropModal: React.FC<Props> = ({ crop, onClose, onChange }) => {
   });
   const handleSubmit = useCallback(
     (values: APIRequestBody.CropCreate) => {
+      if (!organizationId) {
+        return;
+      }
+
       const transformedData: APIRequestBody.CropCreate = {
         ...values,
         harvestWindow: Number(values.harvestWindow),

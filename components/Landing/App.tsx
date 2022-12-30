@@ -6,6 +6,8 @@ import { useBreakpointValue } from '@chakra-ui/react';
 import { Route } from 'utils/enums';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
+import { useCurrentOrganizationsQuery } from 'fetch/organizations';
+import { OrganizationContext } from 'contexts/organization';
 
 type Props = {
   children: React.ReactNode;
@@ -14,9 +16,11 @@ const App: React.FC<Props> = ({ children }) => {
   const router = useRouter();
   const { isOpen, onToggle } = useDisclosure();
   const { status } = useSession();
+
   const handleLogOut = useCallback(() => {
     signOut();
   }, []);
+
   const handleRouteChange = useCallback(
     (route: Route) => {
       router.push(route);
@@ -38,46 +42,50 @@ const App: React.FC<Props> = ({ children }) => {
   );
   useRedirects();
 
+  const { data: organizations } = useCurrentOrganizationsQuery();
+
   return (
-    <AppShell
-      footer={null}
-      header={
-        <HStack flex={1} justifyContent="space-between">
-          <T.HeadingXl>
-            <FormattedMessage
-              defaultMessage="Field Guide"
-              description="Title of the application"
-              id="w6OLlU"
-            />
-          </T.HeadingXl>
-          {status === 'authenticated' && (
-            <Button display={display} onClick={handleLogOut} variant="danger">
+    <OrganizationContext.Provider value={organizations?.[0] ?? null}>
+      <AppShell
+        footer={null}
+        header={
+          <HStack flex={1} justifyContent="space-between">
+            <T.HeadingXl>
               <FormattedMessage
-                defaultMessage="Log out"
-                description="Button to log the user out of the application"
-                id="8xX0PK"
+                defaultMessage="Field Guide"
+                description="Title of the application"
+                id="w6OLlU"
               />
-            </Button>
-          )}
-        </HStack>
-      }
-      isOpen={isOpen}
-      menu={
-        <VStack alignItems="flex-start" w="100%">
-          <NavMenuItem onClick={() => handleRouteChange(Route.Crops)}>
-            <Icon.List />
-            <FormattedMessage
-              defaultMessage="Crops"
-              description="Title of the nav item for the crops screen"
-              id="U/8/fS"
-            />
-          </NavMenuItem>
-        </VStack>
-      }
-      onToggle={onToggle}
-    >
-      {children}
-    </AppShell>
+            </T.HeadingXl>
+            {status === 'authenticated' && (
+              <Button display={display} onClick={handleLogOut} variant="danger">
+                <FormattedMessage
+                  defaultMessage="Log out"
+                  description="Button to log the user out of the application"
+                  id="8xX0PK"
+                />
+              </Button>
+            )}
+          </HStack>
+        }
+        isOpen={isOpen}
+        menu={
+          <VStack alignItems="flex-start" w="100%">
+            <NavMenuItem onClick={() => handleRouteChange(Route.Crops)}>
+              <Icon.List />
+              <FormattedMessage
+                defaultMessage="Crops"
+                description="Title of the nav item for the crops screen"
+                id="U/8/fS"
+              />
+            </NavMenuItem>
+          </VStack>
+        }
+        onToggle={onToggle}
+      >
+        {children}
+      </AppShell>
+    </OrganizationContext.Provider>
   );
 };
 
