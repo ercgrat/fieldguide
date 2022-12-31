@@ -1,12 +1,12 @@
 'use client';
 import { useForm } from 'react-hook-form';
 import { useCreateCropMutation, useUpdateCropMutation } from 'fetch/crops';
-import React, { useCallback, useContext } from 'react';
+import React, { useCallback } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { APIRequestBody } from 'types/backend';
 import { Box, Button, HStack, Modal, NumberInput, TextInput, VStack } from 'fgui';
 import { Crop } from '@prisma/client';
-import { OrganizationContext } from 'contexts/organization';
+import { useOrganization } from 'contexts/organization';
 
 type Props = {
   crop?: Partial<Crop>;
@@ -16,7 +16,9 @@ type Props = {
 };
 const CropModal: React.FC<Props> = ({ crop, mode, onCancel: onClose, onChange }) => {
   const intl = useIntl();
-  const { id: organizationId } = useContext(OrganizationContext) ?? {};
+  const {
+    organization: { id: organizationId }
+  } = useOrganization();
   const {
     register,
     handleSubmit: handleSubmitWrapper,

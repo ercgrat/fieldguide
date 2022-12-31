@@ -1,7 +1,6 @@
 import { Crop } from '@prisma/client';
 import axios from 'axios';
-import { OrganizationContext } from 'contexts/organization';
-import { useContext } from 'react';
+import { useOrganization } from 'contexts/organization';
 import { useMutation, useQuery } from 'react-query';
 import { APIQueryParams, APIRequestBody } from 'types/backend';
 import { QueryKey } from 'utils/enums';
@@ -9,7 +8,9 @@ import { useErrorHandler } from 'utils/error';
 import urls from 'utils/urls';
 
 export const useCropsQuery = () => {
-  const { id: organizationId } = useContext(OrganizationContext) ?? {};
+  const {
+    organization: { id: organizationId }
+  } = useOrganization();
   const { handleError } = useErrorHandler();
   return useQuery<Crop[], Error>(
     [QueryKey.Organization, { organizationId }],
