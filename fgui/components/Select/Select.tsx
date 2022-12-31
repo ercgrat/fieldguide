@@ -12,7 +12,6 @@ const Select = forwardRef<HTMLInputElement, Props>(
     const { isOpen: isFocused, onOpen: focus, onClose: blur } = useDisclosure();
     const { isOpen: isHovered, onOpen: onMouseIn, onClose: onMouseOut } = useDisclosure();
     const borderColor = useBorderColor({ isFocused, isHovered });
-    console.log(isFocused, isHovered, borderColor);
 
     return (
       <Flex direction="column" w="100%">

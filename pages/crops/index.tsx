@@ -86,7 +86,9 @@ const CropsPage: NextPage = () => {
           id="RraxE6"
         />
       </Button>
-      {isAddCropModalOpen && <CropModal onCancel={closeAddCropModal} onChange={handleCropAdded} />}
+      {isAddCropModalOpen && (
+        <CropModal mode="create" onCancel={closeAddCropModal} onChange={handleCropAdded} />
+      )}
       <Stack>
         {isLoading && (
           <>

@@ -87,7 +87,7 @@ const CropActionMenu: React.FC<Props> = ({ crop, onChange }) => {
         </ConfirmationModal>
       )}
       {isEditCropModalOpen && (
-        <CropModal crop={crop} onCancel={closeEditCropModal} onChange={onChange} />
+        <CropModal crop={crop} mode="update" onCancel={closeEditCropModal} onChange={onChange} />
       )}
     </>
   );

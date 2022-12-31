@@ -9,12 +9,12 @@ import { Crop } from '@prisma/client';
 import { OrganizationContext } from 'contexts/organization';
 
 type Props = {
-  crop?: Crop;
+  crop?: Partial<Crop>;
+  mode: 'create' | 'update';
   onCancel: () => void;
-  onChange: () => void;
+  onChange: (crop: Crop) => void;
 };
-const CropModal: React.FC<Props> = ({ crop, onCancel: onClose, onChange }) => {
-  const mode = crop?.id ? 'edit' : 'create';
+const CropModal: React.FC<Props> = ({ crop, mode, onCancel: onClose, onChange }) => {
   const intl = useIntl();
   const { id: organizationId } = useContext(OrganizationContext) ?? {};
   const {
@@ -35,10 +35,10 @@ const CropModal: React.FC<Props> = ({ crop, onCancel: onClose, onChange }) => {
   });
 
   const { mutate: createCrop, isLoading: isCreatingCrop } = useCreateCropMutation({
-    onSuccess: () => onChange?.()
+    onSuccess: (createdCrop: Crop) => onChange?.(createdCrop)
   });
   const { mutate: updateCrop, isLoading: isUpdatingCrop } = useUpdateCropMutation({
-    onSuccess: () => onChange?.()
+    onSuccess: (updatedCrop: Crop) => onChange?.(updatedCrop)
   });
   const handleSubmit = useCallback(
     (values: APIRequestBody.CropCreate) => {
@@ -64,7 +64,7 @@ const CropModal: React.FC<Props> = ({ crop, onCancel: onClose, onChange }) => {
   return (
     <Modal isOpen onClose={onClose}>
       <Modal.Header>
-        {mode === 'edit' ? (
+        {mode === 'update' ? (
           <FormattedMessage
             defaultMessage="Edit Crop"
             description="Title of a modal for editing an existing crop in your catalog"

@@ -28,7 +28,7 @@ export const useCreateCropMutation = (args?: { onSuccess?: (data: Crop) => void 
   const { handleError } = useErrorHandler();
   return useMutation<Crop, Error, APIRequestBody.CropCreate>(
     [QueryKey.Crop],
-    crop => axios.post(urls.crops(), crop),
+    crop => axios.post(urls.crops(), crop).then(({ data }) => data),
     {
       onError: handleError,
       onSuccess: args?.onSuccess
@@ -40,7 +40,7 @@ export const useUpdateCropMutation = (args?: { onSuccess?: (data: Crop) => void 
   const { handleError } = useErrorHandler();
   return useMutation<Crop, Error, APIRequestBody.CropUpdate>(
     [QueryKey.Crop],
-    crop => axios.put(urls.crops(), crop),
+    crop => axios.put(urls.crops(), crop).then(({ data }) => data),
     {
       onError: handleError,
       onSuccess: args?.onSuccess
