@@ -34,6 +34,11 @@ const CropActionMenu: React.FC<Props> = ({ crop, onChange }) => {
     }
   });
 
+  const handleUpdateCrop = useCallback(() => {
+    closeEditCropModal();
+    onChange();
+  }, [closeEditCropModal, onChange]);
+
   const handleDeleteCrop = useCallback(() => {
     deleteCrop({ id: crop.id });
   }, [crop.id, deleteCrop]);
@@ -87,7 +92,12 @@ const CropActionMenu: React.FC<Props> = ({ crop, onChange }) => {
         </ConfirmationModal>
       )}
       {isEditCropModalOpen && (
-        <CropModal crop={crop} mode="update" onCancel={closeEditCropModal} onChange={onChange} />
+        <CropModal
+          crop={crop}
+          mode="update"
+          onCancel={closeEditCropModal}
+          onChange={handleUpdateCrop}
+        />
       )}
     </>
   );
