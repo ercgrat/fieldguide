@@ -24,7 +24,13 @@ const Select = forwardRef<HTMLInputElement, Props>(
           onMouseOver={onMouseIn}
           ref={ref}
           searchable={searchable}
-          sx={{ position: 'relative', input: { border: 'solid 1px', borderColor } }}
+          sx={{
+            position: 'relative',
+            input: { border: 'solid 1px', borderColor },
+            '.mantine-Select-dropdown': {
+              position: 'fixed'
+            }
+          }}
         />
       </Flex>
     );

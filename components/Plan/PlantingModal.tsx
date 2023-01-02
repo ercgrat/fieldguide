@@ -16,7 +16,7 @@ const PlantingModal: React.FC<Props> = ({ onClose, onChange }) => {
   const { bedLengthUnits, inRowSpacingUnits } = useOrganization();
 
   return (
-    <Modal isOpen onClose={onClose} overflow="visible">
+    <Modal isOpen onClose={onClose}>
       <Modal.Header>
         <FormattedMessage
           defaultMessage="Add Planting"
@@ -24,7 +24,7 @@ const PlantingModal: React.FC<Props> = ({ onClose, onChange }) => {
           id="ZTze/u"
         />
       </Modal.Header>
-      <Modal.Body overflowY="visible">
+      <Modal.Body>
         <VStack alignItems="stretch">
           <Controller
             control={control}

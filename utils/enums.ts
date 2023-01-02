@@ -2,6 +2,7 @@ export enum QueryKey {
   Crop = 'Crop',
   Login = 'Login',
   Organization = 'Organization',
+  Unit = 'Unit',
   User = 'User'
 }
 

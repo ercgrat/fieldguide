@@ -10,14 +10,14 @@ import CreateOrganizationCommand from 'db/organizations/CreateOrganizationComman
 import { SequentialTransaction } from 'db/Transaction';
 import GetOrganizationCommand from 'db/organizations/GetOrganizationCommand';
 
-const getSchema: RequestSchema = Joi.object<Record<keyof NextApiRequest, AnySchema>>({
-  query: Joi.object<APIQueryParams.Organization>({
+const readSchema: RequestSchema = Joi.object<Record<keyof NextApiRequest, AnySchema>>({
+  query: Joi.object<APIQueryParams.OrganizationRead>({
     name: Joi.string(),
     userId: Joi.string()
   }).required()
 });
 
-const postSchema = Joi.object<Record<keyof NextApiRequest, AnySchema>>({
+const updateSchema = Joi.object<Record<keyof NextApiRequest, AnySchema>>({
   method: 'POST',
   body: Joi.object<APIRequestBody.OrganizationCreate>({
     name: Joi.string().required(),
@@ -35,8 +35,8 @@ const postSchema = Joi.object<Record<keyof NextApiRequest, AnySchema>>({
   }).required()
 });
 
-const getOrganizations = (req: NextApiRequest, res: NextApiResponse<Organization[]>) => {
-  const query = req.query as APIQueryParams.Organization;
+const readOrganizations = (req: NextApiRequest, res: NextApiResponse<Organization[]>) => {
+  const query = req.query as APIQueryParams.OrganizationRead;
   const { userId, name } = query;
 
   return new Promise((resolve, reject) => {
@@ -61,7 +61,7 @@ const getOrganizations = (req: NextApiRequest, res: NextApiResponse<Organization
   });
 };
 
-const createOrganization = (req: NextApiRequest, res: NextApiResponse<Organization>) => {
+const updateOrganization = (req: NextApiRequest, res: NextApiResponse<Organization>) => {
   const { userId, ...organization } = req.body as APIRequestBody.OrganizationCreate;
   return new Promise((resolve, reject) => {
     const createOrganizationCommand = new CreateOrganizationCommand(organization, userId);
@@ -87,11 +87,11 @@ const createOrganization = (req: NextApiRequest, res: NextApiResponse<Organizati
 
 export default withRouteSetup({
   schemas: {
-    [HttpMethod.GET]: getSchema,
-    [HttpMethod.POST]: postSchema
+    [HttpMethod.GET]: readSchema,
+    [HttpMethod.POST]: updateSchema
   },
   handlers: {
-    [HttpMethod.GET]: getOrganizations,
-    [HttpMethod.POST]: createOrganization
+    [HttpMethod.GET]: readOrganizations,
+    [HttpMethod.POST]: updateOrganization
   }
 });

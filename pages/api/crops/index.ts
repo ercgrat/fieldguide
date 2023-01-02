@@ -7,7 +7,7 @@ import { HttpMethod, HttpResponseHeader } from 'utils/enums';
 import { APIQueryParams, APIRequestBody } from 'types/backend';
 import { SequentialTransaction } from 'db/Transaction';
 import CreateCropCommand from 'db/crops/CreateCropCommand';
-import GetCropCommand from 'db/crops/GetCropCommand';
+import ReadCropsCommand from 'db/crops/ReadCropsCommand';
 import DeleteCropCommand from 'db/crops/DeleteCropCommand';
 import UpdateCropCommand from 'db/crops/UpdateCropCommand';
 
@@ -16,14 +16,17 @@ const createSchema: RequestSchema = Joi.object({
     organizationId: Joi.number().required(),
     name: Joi.string().required(),
     daysToMaturity: Joi.number().required().min(0),
-    harvestWindow: Joi.number().required().min(1)
+    harvestWindow: Joi.number().required().min(1),
+    harvestRate: Joi.number().min(0).optional().allow(null),
+    pricePerHarvestUnit: Joi.number().min(0).optional().allow(null),
+    unitId: Joi.number().optional().allow(null)
   })
 });
 
 const readSchema: RequestSchema = Joi.object({
   query: Joi.object<APIQueryParams.CropRead>({
     organizationId: Joi.number().required()
-  })
+  }).required()
 });
 
 const updateSchema: RequestSchema = Joi.object({
@@ -32,7 +35,10 @@ const updateSchema: RequestSchema = Joi.object({
     organizationId: Joi.number().required(),
     name: Joi.string().required(),
     daysToMaturity: Joi.number().required().min(0),
-    harvestWindow: Joi.number().required().min(1)
+    harvestWindow: Joi.number().required().min(1),
+    harvestRate: Joi.number().min(0).optional().allow(null),
+    pricePerHarvestUnit: Joi.number().min(0).optional().allow(null),
+    unitId: Joi.number().optional().allow(null)
   })
 });
 
@@ -70,7 +76,7 @@ const readCrops = (req: NextApiRequest, res: NextApiResponse<Crop[]>) => {
   const query = req.query as APIQueryParams.CropRead;
   const { organizationId } = query;
   return new Promise((resolve, reject) => {
-    const getCropCommand = new GetCropCommand(Number(organizationId));
+    const getCropCommand = new ReadCropsCommand(Number(organizationId));
 
     const transaction = new SequentialTransaction([getCropCommand]);
     transaction

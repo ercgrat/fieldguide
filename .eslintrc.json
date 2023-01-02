@@ -66,8 +66,6 @@
         "beforeClosing": "never"
       }
     ],
-    "react/jsx-sort-props": ["error"],
-    "react/jsx-sort-default-props": ["error"],
     "react/jsx-no-constructed-context-values": ["error"],
     "react/jsx-handler-names": ["error"],
     "@typescript-eslint/no-non-null-assertion": ["error"],

@@ -1,4 +1,4 @@
-import { Role, UnitSystem } from '@prisma/client';
+import { Prisma, Role, UnitSystem } from '@prisma/client';
 import { Command } from 'db/Command';
 import { db } from 'db';
 
@@ -26,8 +26,40 @@ export default class CreateOrganizationCommand implements Command {
             role: Role.Owner,
             userId: this.userId
           }
+        },
+        Unit: {
+          createMany: {
+            data: DEFAULT_UNITS
+          }
         }
       }
     });
   }
 }
+
+const DEFAULT_UNITS: Prisma.UnitCreateManyOrganizationInput[] = [
+  {
+    name: 'bags',
+    abbreviation: 'bag'
+  },
+  {
+    name: 'bunches',
+    abbreviation: 'bunch'
+  },
+  {
+    name: 'count',
+    abbreviation: 'ct'
+  },
+  {
+    name: 'kilograms',
+    abbreviation: 'kg'
+  },
+  {
+    name: 'pounds',
+    abbreviation: 'lb'
+  },
+  {
+    name: 'pints',
+    abbreviation: 'pint'
+  }
+];

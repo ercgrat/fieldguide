@@ -9,13 +9,13 @@ import GetUserCommand from 'db/users/getUserCommand';
 import { SequentialTransaction } from 'db/Transaction';
 
 const getSchema: RequestSchema = Joi.object({
-  query: Joi.object<APIQueryParams.User>({
+  query: Joi.object<APIQueryParams.UserRead>({
     email: Joi.string().required()
   })
 });
 
 const getUser = (req: NextApiRequest, res: NextApiResponse<User>) => {
-  const query = req.query as APIQueryParams.User;
+  const query = req.query as APIQueryParams.UserRead;
   const { email } = query;
   return new Promise((resolve, reject) => {
     const getUserCommand = new GetUserCommand(email);

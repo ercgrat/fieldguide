@@ -8,7 +8,7 @@ generator client {
 datasource db {
   provider     = "mysql"
   url          = env("DATABASE_URL")
-  relationMode = "foreignKeys"
+  relationMode = "prisma"
 }
 
 model Account {
@@ -28,16 +28,24 @@ model Account {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index(fields: [userId])
 }
 
 model Crop {
-  id             Int          @id @default(autoincrement())
-  organization   Organization @relation(fields: [organizationId], references: [id])
-  organizationId Int
-  name           String
-  daysToMaturity Int?
-  harvestWindow  Int?
-  Planting       Planting[]
+  id                  Int          @id @default(autoincrement())
+  organization        Organization @relation(fields: [organizationId], references: [id])
+  organizationId      Int
+  name                String
+  daysToMaturity      Int
+  harvestWindow       Int
+  harvestUnit         Unit?        @relation(fields: [unitId], references: [id])
+  harvestRate         Int?
+  pricePerHarvestUnit Float?
+  Planting            Planting[]
+  unitId              Int?
+
+  @@unique([organizationId, name])
+  @@index(fields: [unitId])
 }
 
 model Membership {
@@ -49,6 +57,7 @@ model Membership {
   role           Role         @default(Member)
 
   @@unique([userId, organizationId])
+  @@index(fields: [organizationId])
 }
 
 model Organization {
@@ -65,6 +74,7 @@ model Organization {
   unitSystem UnitSystem
   Membership Membership[]
   Crop       Crop[]
+  Unit       Unit[]
 }
 
 model Planting {
@@ -75,6 +85,8 @@ model Planting {
   bedLength    Int?
   rowsPerPed   Int?
   inRowSpacing Int?
+
+  @@index(fields: [cropId])
 }
 
 model Session {
@@ -83,6 +95,19 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index(fields: [userId])
+}
+
+model Unit {
+  id             Int          @id @default(autoincrement())
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  organizationId Int
+  name           String
+  abbreviation   String
+  Crop           Crop[]
+
+  @@unique([organizationId, name])
 }
 
 model User {
