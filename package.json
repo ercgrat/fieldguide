@@ -40,6 +40,7 @@
     "react-hook-form": "^7.39.5",
     "react-intl": "^5.25.1",
     "react-query": "^3.39.2",
+    "ts-key-enum": "^2.0.12",
     "use-debounce": "^8.0.4"
   },
   "devDependencies": {

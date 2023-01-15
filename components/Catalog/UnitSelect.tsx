@@ -67,7 +67,7 @@ const UnitSelect: React.FC<Props> = ({ value, onChange, label }) => {
         getCreateLabel={query => (
           <HStack>
             <Icon.PlusCircle color="cornflower.100" />
-            <T.BodyMd>
+            <T.BodyMd whiteSpace="break-spaces">
               <FormattedMessage
                 defaultMessage="Create {query}"
                 description="Select dropdown option to create a new unit"
