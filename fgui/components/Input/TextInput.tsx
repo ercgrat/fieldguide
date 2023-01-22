@@ -65,6 +65,7 @@ const TextInput = forwardRef<Props, 'input'>(
               borderColor={borderColor}
               borderLeft="none"
               h="36px"
+              px={3}
             >
               {rightAddon}
             </InputRightAddon>

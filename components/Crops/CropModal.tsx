@@ -37,17 +37,10 @@ const CropModal: React.FC<Props> = ({ crop, mode, onCancel: onClose, onChange })
 
   const harvestUnitID = watch('unitId');
   const harvestUnit = units?.find(unit => unit.id === harvestUnitID);
-
-  const { onChange: _daysToMaturityOnChange, ...daysToMaturityProps } = register('daysToMaturity', {
-    required: true
-  });
-  const { onChange: _harvestWindowOnChange, ...harvestWindowProps } = register('harvestWindow', {
-    required: true
-  });
-  const { onChange: _harvestRateOnChange, ...harvestRateProps } = register('harvestRate');
-
-  const { onChange: _pricePerHarvestUnitOnChange, ...pricePerHarvestUnitProps } =
-    register('pricePerHarvestUnit');
+  const daysToMaturity = watch('daysToMaturity');
+  const harvestWindow = watch('harvestWindow');
+  const harvestRate = watch('harvestRate') ?? undefined;
+  const pricePerHarvestUnit = watch('pricePerHarvestUnit') ?? undefined;
 
   const { mutate: createCrop, isLoading: isCreatingCrop } = useCreateCropMutation({
     onSuccess: (createdCrop: Crop) => onChange?.(createdCrop)
@@ -125,7 +118,7 @@ const CropModal: React.FC<Props> = ({ crop, mode, onCancel: onClose, onChange })
                   description:
                     'Label for the number input for days to maturity when creating a crop'
                 })}
-                {...daysToMaturityProps}
+                value={daysToMaturity}
                 max={undefined}
                 min={0}
                 onChange={v => setValue('daysToMaturity', v)}
@@ -137,13 +130,13 @@ const CropModal: React.FC<Props> = ({ crop, mode, onCancel: onClose, onChange })
                   id: 'xq5zUL',
                   description: 'Label for the number input for harvest window when creating a crop'
                 })}
-                {...harvestWindowProps}
+                value={harvestWindow}
                 max={undefined}
                 min={1}
                 onChange={v => setValue('harvestWindow', v)}
               />
             </HStack>
-            <Card borderLeft="solid 4px" borderColor="pea.100" p={2} overflow="visible">
+            <Card borderLeft="solid 4px" borderColor="pea.100" p={3} overflow="visible">
               <VStack alignItems="stretch">
                 <T.HeadingSm>
                   <FormattedMessage
@@ -162,7 +155,7 @@ const CropModal: React.FC<Props> = ({ crop, mode, onCancel: onClose, onChange })
                   </T.Label>
                   <HStack>
                     <NumberInput
-                      {...harvestRateProps}
+                      value={harvestRate}
                       min={0}
                       max={undefined}
                       onChange={v => setValue('harvestRate', v)}
@@ -207,11 +200,13 @@ const CropModal: React.FC<Props> = ({ crop, mode, onCancel: onClose, onChange })
                   </T.Label>
                   <HStack>
                     <NumberInput
-                      {...pricePerHarvestUnitProps}
+                      value={pricePerHarvestUnit}
                       min={0}
                       max={undefined}
-                      precision={2}
+                      minimumFractionDigits={2}
                       isDisabled={!harvestUnit}
+                      leftAddon="$"
+                      onChange={v => setValue('pricePerHarvestUnit', v)}
                     />
                     <T.BodySm whiteSpace="nowrap">
                       <FormattedMessage

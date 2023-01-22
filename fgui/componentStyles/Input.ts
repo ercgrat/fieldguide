@@ -8,13 +8,16 @@ const baseStyle = definePartsStyle({
   field: {
     background: 'bark.5',
     fontSize: 'md',
-    color: 'bark.90'
+    color: 'bark.90',
+    flex: 1
   },
   addon: {
     color: 'bark.90',
     backgroundColor: 'bark.10',
     transitionProperty: 'border-color',
-    transitionDuration: 'normal'
+    transitionDuration: 'normal',
+    borderRadius: '4px',
+    px: 3
   }
 });
 
