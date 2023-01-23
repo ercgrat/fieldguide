@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@chakra-ui/icons": "2.0.13",
-    "@chakra-ui/react": "2.4.2",
+    "@chakra-ui/react": "2.4.9",
     "@chakra-ui/theme-tools": "2.0.16",
     "@emotion/styled": "^11.10.5",
     "@mantine/core": "^5.9.5",
