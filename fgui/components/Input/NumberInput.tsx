@@ -181,6 +181,8 @@ const NumberInput = forwardRef<Props, 'div'>(
       });
     }, []);
 
+    const { borderRadius, ...styles } = fieldStyles;
+
     return (
       <Flex direction="column" w="100%">
         <InputLabel isRequired={isRequired} label={label} />
@@ -190,7 +192,8 @@ const NumberInput = forwardRef<Props, 'div'>(
               borderColor={borderColor}
               borderRight="none"
               h="36px"
-              borderRadius={fieldStyles.borderRadius}
+              borderTopLeftRadius={borderRadius}
+              borderBottomLeftRadius={borderRadius}
               opacity={isDisabled ? 0.4 : undefined}
               px={3}
             >
@@ -221,9 +224,9 @@ const NumberInput = forwardRef<Props, 'div'>(
               onChange={handleChange}
               placeholder={placeholder}
               borderLeft={leftAddon ? 'none !important' : undefined}
-              borderTopLeftRadius={leftAddon ? '0' : undefined}
-              borderBottomLeftRadius={leftAddon ? '0' : undefined}
-              {...fieldStyles}
+              borderTopLeftRadius={leftAddon ? '0' : borderRadius}
+              borderBottomLeftRadius={leftAddon ? '0' : borderRadius}
+              {...styles}
             />
           </ChakraNumberInput>
         </InputGroup>
