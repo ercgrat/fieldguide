@@ -226,6 +226,8 @@ const NumberInput = forwardRef<Props, 'div'>(
               borderLeft={leftAddon ? 'none !important' : undefined}
               borderTopLeftRadius={leftAddon ? '0' : borderRadius}
               borderBottomLeftRadius={leftAddon ? '0' : borderRadius}
+              borderTopRightRadius={borderRadius}
+              borderBottomRightRadius={borderRadius}
               {...styles}
             />
           </ChakraNumberInput>
